@@ -768,9 +768,9 @@ See the [Recommended Demo Flow](#-recommended-demo-flow) above for a suggested s
 
 ## Contributors
 
-- **Sujal Vasara** — Architecture, RAG Pipeline & Full-Stack Implementation
+- **Manjeet Arvind Singh** — Architecture, RAG Pipeline & Full-Stack Implementation
 
-**Repository:** [https://github.com/VasaraSujal/Hacker-House-GOA-Task-2](https://github.com/VasaraSujal/Hacker-House-GOA-Task-2)
+**Repository:** [https://github.com/ManjeetMMIV/task2](https://github.com/ManjeetMMIV/task2)
 
 ---
 
@@ -809,7 +809,7 @@ This project is open-source and available under the [MIT License](LICENSE):
 ```text
 MIT License
 
-Copyright (c) 2026 Sujal Vasara
+Copyright (c) 2026 Manjeet Arvind Singh
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
