@@ -31,16 +31,16 @@ export function EvidenceCard({ result }: { result: VoiceRagResponse }) {
         <FiFileText aria-hidden="true" />
         Evidence
       </div>
-      <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-slate-200">
+      <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-slate-700">
         {grounded ? (
           <>
-            <FiCheckCircle className="mt-0.5 size-4 shrink-0 text-emerald-300" aria-hidden="true" />
-            <span>Grounded using {count} retrieved {count === 1 ? 'passage' : 'passages'}</span>
+            <FiCheckCircle className="mt-0.5 size-4 shrink-0 text-emerald-600" aria-hidden="true" />
+            <span className="font-medium">Grounded using {count} retrieved {count === 1 ? 'passage' : 'passages'}</span>
           </>
         ) : (
           <>
-            <FiFileText className="mt-0.5 size-4 shrink-0 text-amber-200" aria-hidden="true" />
-            <span>
+            <FiFileText className="mt-0.5 size-4 shrink-0 text-amber-600" aria-hidden="true" />
+            <span className="font-medium">
               {count
                 ? `${count} retrieved ${count === 1 ? 'passage' : 'passages'} available for inspection. The answer was withheld.`
                 : 'No retrieved passages are shown for this refusal.'}
@@ -51,15 +51,15 @@ export function EvidenceCard({ result }: { result: VoiceRagResponse }) {
       <dl className="mt-4 grid gap-2 text-xs text-slate-500 sm:grid-cols-3">
         <div>
           <dt>Knowledge base</dt>
-          <dd className="mt-1 text-slate-300">MSMARCO-XI validation subset</dd>
+          <dd className="mt-1 text-slate-800 font-medium">MSMARCO-XI validation subset</dd>
         </div>
         <div>
           <dt>Retrieval</dt>
-          <dd className="mt-1 text-slate-300">Dense + BM25</dd>
+          <dd className="mt-1 text-slate-800 font-medium">Dense + BM25</dd>
         </div>
         <div>
           <dt>Fusion</dt>
-          <dd className="mt-1 text-slate-300">RRF</dd>
+          <dd className="mt-1 text-slate-800 font-medium">RRF</dd>
         </div>
       </dl>
       {count > 0 && (
@@ -69,7 +69,7 @@ export function EvidenceCard({ result }: { result: VoiceRagResponse }) {
       )}
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/70 p-4 sm:items-center">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 backdrop-blur-sm p-4 sm:items-center">
           <button
             type="button"
             className="absolute inset-0"
@@ -80,14 +80,14 @@ export function EvidenceCard({ result }: { result: VoiceRagResponse }) {
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="relative z-10 max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-[#0b1220] p-5 shadow-2xl"
+            className="relative z-10 max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 id={titleId} className="text-base font-semibold text-white">
+                <h2 id={titleId} className="text-base font-bold text-slate-900">
                   Retrieved passages
                 </h2>
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs font-medium text-slate-500">
                   Engineering evidence for this request. {count} {count === 1 ? 'passage' : 'passages'}.
                 </p>
               </div>

@@ -19,11 +19,11 @@ export function PipelineStrip() {
           return (
             <li
               key={stage.label}
-              className="flex min-w-[6.5rem] flex-1 items-center gap-2 rounded-xl border border-white/8 bg-white/[0.03] px-3 py-2"
+              className="flex min-w-[6.5rem] flex-1 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"
             >
-              <Icon className="size-4 shrink-0 text-cyan-200" aria-hidden="true" />
+              <Icon className="size-4 shrink-0 text-indigo-600" aria-hidden="true" />
               <div className="min-w-0">
-                <p className="text-xs text-slate-200">
+                <p className="text-xs text-slate-700 font-medium">
                   {index + 1}. {stage.label}
                 </p>
               </div>

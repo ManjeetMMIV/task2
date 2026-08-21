@@ -7,45 +7,45 @@ interface HeaderProps {
 
 export function Header({ status }: HeaderProps) {
   return (
-    <header className="flex items-center justify-between border-b border-white/10 py-5">
+    <header className="flex items-center justify-between border-b border-slate-200 py-5">
       <div className="flex items-center gap-3">
-        <span className="grid size-10 place-items-center rounded-xl border border-cyan-300/25 bg-cyan-300/10 text-cyan-200">
+        <span className="grid size-10 place-items-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600">
           <FiDatabase aria-hidden="true" />
         </span>
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-cyan-300">HH Goa 2026</p>
-          <p className="text-sm font-semibold text-white">Voice RAG</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-indigo-500 font-semibold">HH Goa 2026</p>
+          <p className="text-sm font-bold text-slate-900">Voice RAG</p>
         </div>
       </div>
       <div className="flex items-center gap-2 text-xs" aria-live="polite">
         {status === 'ready' && (
           <>
-            <FiCheckCircle className="size-4 text-emerald-400" aria-hidden="true" />
-            <span className="font-medium text-emerald-300">System ready</span>
+            <FiCheckCircle className="size-4 text-emerald-500" aria-hidden="true" />
+            <span className="font-medium text-emerald-700">System ready</span>
           </>
         )}
         {status === 'warming' && (
           <>
-            <FiActivity className="size-4 animate-pulse text-cyan-300" aria-hidden="true" />
-            <span className="text-cyan-200">Warming up…</span>
+            <FiActivity className="size-4 animate-pulse text-indigo-500" aria-hidden="true" />
+            <span className="font-medium text-indigo-600">Warming up…</span>
           </>
         )}
         {status === 'preparing' && (
           <>
             <FiActivity className="size-4 text-slate-400" aria-hidden="true" />
-            <span className="text-slate-400">Preparing…</span>
+            <span className="font-medium text-slate-500">Preparing…</span>
           </>
         )}
         {status === 'degraded' && (
           <>
-            <FiActivity className="size-4 text-amber-400" aria-hidden="true" />
-            <span className="text-amber-200">Backend connected</span>
+            <FiActivity className="size-4 text-amber-500" aria-hidden="true" />
+            <span className="font-medium text-amber-700">Backend connected</span>
           </>
         )}
         {status === 'unavailable' && (
           <>
-            <FiActivity className="size-4 text-rose-400" aria-hidden="true" />
-            <span className="text-rose-300">Backend unavailable</span>
+            <FiActivity className="size-4 text-rose-500" aria-hidden="true" />
+            <span className="font-medium text-rose-700">Backend unavailable</span>
           </>
         )}
       </div>

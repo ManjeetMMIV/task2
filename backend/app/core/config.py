@@ -91,6 +91,8 @@ class Settings(BaseSettings):
     bm25_index_path: Path = PROJECT_ROOT / "data" / "indexes" / "bm25.pkl"
 
     elevenlabs_api_key: str = ""
+    openai_api_key: str = ""
+    openai_model: str = "gpt-4o-mini"
     elevenlabs_api_base: str = "https://api.elevenlabs.io"
     elevenlabs_model: str = "gemini-2.0-flash"
     elevenlabs_agent_id: str = ""

@@ -12,13 +12,13 @@ export function AnswerPanel({ result }: { result: VoiceRagResponse }) {
           <FiMic aria-hidden="true" />
           You asked
         </div>
-        <blockquote className="mt-4 text-xl font-medium leading-8 text-white sm:text-2xl">
+        <blockquote className="mt-4 text-xl font-semibold leading-8 text-slate-900 sm:text-2xl">
           “{result.transcript}”
         </blockquote>
       </section>
 
       <section
-        className={`result-card ${refused ? 'border-amber-300/25' : 'border-emerald-300/20'}`}
+        className={`result-card ${refused ? 'border-amber-200 ring-4 ring-amber-50' : 'border-emerald-200 ring-4 ring-emerald-50'}`}
         aria-live="polite"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -27,8 +27,8 @@ export function AnswerPanel({ result }: { result: VoiceRagResponse }) {
             {refused ? 'Knowledge-base refusal' : 'Grounded answer'}
           </div>
           <span
-            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs ${
-              grounded ? 'bg-emerald-300/10 text-emerald-200' : 'bg-amber-300/10 text-amber-100'
+            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${
+              grounded ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
             }`}
           >
             {grounded ? (
@@ -45,10 +45,10 @@ export function AnswerPanel({ result }: { result: VoiceRagResponse }) {
           </span>
         </div>
 
-        <p className="mt-5 whitespace-pre-wrap text-[17px] leading-8 text-slate-100">{result.answer}</p>
+        <p className="mt-5 whitespace-pre-wrap text-[17px] leading-8 text-slate-800">{result.answer}</p>
 
         {refused && (
-          <p className="mt-4 border-t border-white/8 pt-4 text-sm text-amber-100/80">
+          <p className="mt-4 border-t border-slate-200 pt-4 text-sm font-medium text-amber-700">
             Grounding: Not available. Not enough relevant evidence was found in the knowledge base.
           </p>
         )}

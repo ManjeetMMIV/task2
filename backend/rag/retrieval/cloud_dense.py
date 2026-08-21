@@ -23,8 +23,14 @@ class CloudDenseRetriever:
 
     def search(self, query: str, top_k: int = 20) -> DenseSearchOutput:
         t0 = time.perf_counter()
+        
+        # e5 models require 'query: ' prefix
+        query_text = query
+        if "e5" in self.inference_model.lower():
+            query_text = f"query: {query}"
+            
         results = self.store.search_with_inference(
-            query,
+            query_text,
             model=self.inference_model,
             top_k=top_k,
         )

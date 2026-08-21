@@ -81,20 +81,18 @@ function App() {
   }, [recorder.isRecording])
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#06090f] text-slate-200">
+    <div className="min-h-screen overflow-x-hidden">
       <div className="noise-layer" aria-hidden="true" />
-      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
         <Header status={systemStatus} />
 
-        <main className="py-8 sm:py-12">
-          <div className="mb-8 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.26em] text-cyan-300">Voice-first retrieval</p>
-              <h2 className="mt-3 max-w-3xl text-4xl font-semibold tracking-[-0.04em] text-white sm:text-6xl">
-                Ask. Retrieve. Answer with evidence.
-              </h2>
-            </div>
-            <p className="max-w-sm text-sm leading-6 text-slate-500">
+        <main className="py-8 sm:py-16 flex flex-col items-center text-center">
+          <div className="mb-10 flex flex-col items-center">
+            <p className="font-mono text-xs uppercase tracking-[0.26em] text-indigo-600 font-semibold">Voice-first retrieval</p>
+            <h2 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
+              Ask. Retrieve. Answer with evidence.
+            </h2>
+            <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-600">
               ElevenLabs speech recognition meets hybrid retrieval and transparent grounding. Every result shows measured latency, grounding status, and compact evidence.
             </p>
           </div>
@@ -124,17 +122,15 @@ function App() {
             </section>
           )}
 
-          {state === 'processing' && <div className="mt-5"><ProcessingState /></div>}
+          {state === 'processing' && <div className="mt-8 w-full max-w-2xl mx-auto"><ProcessingState /></div>}
 
           {result && (state === 'success' || state === 'refused') && (
-            <div className="mt-6 space-y-5">
-              <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(280px,0.75fr)]">
-                <div className="min-w-0">
-                  <AnswerPanel result={result} />
-                </div>
-                <div className="min-w-0 space-y-5 lg:sticky lg:top-5">
-                  <LatencyPanel latency={result.latency} />
-                  <button type="button" onClick={start} className="primary-button w-full">
+            <div className="mt-10 space-y-6 w-full max-w-3xl mx-auto text-left">
+              <AnswerPanel result={result} />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <LatencyPanel latency={result.latency} />
+                <div className="flex items-center">
+                  <button type="button" onClick={start} className="primary-button w-full h-full">
                     Ask another question <FiArrowRight aria-hidden="true" />
                   </button>
                 </div>
@@ -146,19 +142,19 @@ function App() {
           )}
 
           {!result && state === 'idle' && !error && (
-            <section className="mt-6 grid gap-3 sm:grid-cols-3">
-              {['What is a corporation?', 'What is benthos?', 'What is Bayern Munich?'].map((question) => (
-                <div key={question} className="rounded-xl border border-white/8 bg-white/[0.025] px-4 py-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-600">Try asking</p>
-                  <p className="mt-2 text-sm text-slate-400">“{question}”</p>
+            <section className="mt-10 grid gap-4 sm:grid-cols-2 w-full max-w-3xl mx-auto text-left">
+              {['What causes high blood pressure?', 'What is a corporation?'].map((question) => (
+                <div key={question} className="rounded-xl border border-slate-200 bg-white px-5 py-5 shadow-sm transition-shadow hover:shadow-md cursor-default">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-indigo-500 font-semibold">Try asking</p>
+                  <p className="mt-2 text-sm font-medium text-slate-700">“{question}”</p>
                 </div>
               ))}
             </section>
           )}
         </main>
 
-        <footer className="flex flex-col gap-2 border-t border-white/8 py-6 text-xs text-slate-600 sm:flex-row sm:justify-between">
-          <span>HH Goa 2026 · Voice RAG</span>
+        <footer className="flex flex-col items-center gap-3 border-t border-slate-200 py-8 text-xs text-slate-500 sm:flex-row sm:justify-between w-full max-w-3xl mx-auto">
+          <span className="font-medium">HH Goa 2026 · Voice RAG</span>
           <span>Actual request timings · No fake streaming · Grounded responses</span>
         </footer>
       </div>

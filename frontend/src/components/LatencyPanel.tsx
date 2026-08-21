@@ -32,8 +32,8 @@ export function LatencyPanel({ latency }: { latency: VoiceLatency }) {
       className={`result-card ${
         ragMeasured
           ? underTarget
-            ? 'border-emerald-300/25'
-            : 'border-amber-300/25'
+            ? 'border-emerald-200 ring-4 ring-emerald-50'
+            : 'border-amber-200 ring-4 ring-amber-50'
           : ''
       }`}
     >
@@ -44,12 +44,12 @@ export function LatencyPanel({ latency }: { latency: VoiceLatency }) {
 
       {ragLabel ? (
         <>
-          <p className="mt-4 font-mono text-5xl font-semibold tracking-tight text-white">
+          <p className="mt-4 font-mono text-5xl font-semibold tracking-tight text-slate-900">
             {ragLabel}
           </p>
           <p
             className={`mt-4 flex items-center gap-2 text-sm font-medium ${
-              underTarget ? 'text-emerald-200' : 'text-amber-100'
+              underTarget ? 'text-emerald-700' : 'text-amber-700'
             }`}
           >
             {underTarget ? (
@@ -61,30 +61,30 @@ export function LatencyPanel({ latency }: { latency: VoiceLatency }) {
           </p>
         </>
       ) : (
-        <p className="mt-4 text-base font-medium text-slate-400">
+        <p className="mt-4 text-base font-medium text-slate-600">
           RAG latency unavailable
         </p>
       )}
-      <p className="mt-2 text-xs text-slate-500">Retrieval → Grounding</p>
+      <p className="mt-2 text-xs font-medium text-slate-500">Retrieval → Grounding</p>
 
       <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">
         {sttLabel && (
-          <div className="rounded-xl border border-white/8 bg-white/[0.03] px-3 py-2">
-            <dt className="text-slate-500">Speech-to-text</dt>
-            <dd className="mt-1 font-mono text-sm text-cyan-200">{sttLabel}</dd>
+          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+            <dt className="text-slate-500 font-medium">Speech-to-text</dt>
+            <dd className="mt-1 font-mono text-sm font-semibold text-indigo-600">{sttLabel}</dd>
           </div>
         )}
         {totalLabel && (
-          <div className="rounded-xl border border-white/8 bg-white/[0.03] px-3 py-2">
-            <dt className="text-slate-500">Total voice request</dt>
-            <dd className="mt-1 font-mono text-sm text-slate-300">{totalLabel}</dd>
+          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+            <dt className="text-slate-500 font-medium">Total voice request</dt>
+            <dd className="mt-1 font-mono text-sm font-semibold text-slate-800">{totalLabel}</dd>
           </div>
         )}
       </dl>
 
       <button
         type="button"
-        className="mt-5 text-xs font-medium text-cyan-200 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300"
+        className="mt-5 text-xs font-semibold text-indigo-600 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300"
         aria-expanded={detailsOpen}
         onClick={() => setDetailsOpen((open) => !open)}
       >
@@ -92,14 +92,14 @@ export function LatencyPanel({ latency }: { latency: VoiceLatency }) {
       </button>
 
       {detailsOpen && (
-        <dl className="mt-4 space-y-2 border-t border-white/8 pt-4 text-xs">
+        <dl className="mt-4 space-y-2 border-t border-slate-200 pt-4 text-xs">
           {DETAIL_ROWS.map((row) => {
             const formatted = formatDuration(latency[row.key])
             if (!formatted) return null
             return (
               <div key={row.key} className="flex items-center justify-between gap-3">
-                <dt className="text-slate-500">{row.label}</dt>
-                <dd className="font-mono text-slate-300">{formatted}</dd>
+                <dt className="text-slate-500 font-medium">{row.label}</dt>
+                <dd className="font-mono font-medium text-slate-700">{formatted}</dd>
               </div>
             )
           })}

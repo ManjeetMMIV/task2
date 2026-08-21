@@ -5,6 +5,7 @@ import logging
 from app.core.config import Settings
 from rag.generation.elevenlabs import ElevenLabsProvider
 from rag.generation.extractive import ExtractiveAnswerProvider
+from rag.generation.openai_provider import OpenAIProvider
 from rag.pipeline import RAGPipeline
 from rag.reranking.identity import IdentityReranker
 from rag.reranking.lexical import LexicalLightReranker
@@ -109,6 +110,11 @@ def build_pipeline(settings: Settings) -> RAGPipeline:
 
     if answer_mode == "extractive":
         llm = ExtractiveAnswerProvider()
+    elif getattr(settings, "openai_api_key", None):
+        llm = OpenAIProvider(
+            settings.openai_api_key,
+            model=getattr(settings, "openai_model", "gpt-4o-mini"),
+        )
     else:
         llm = ElevenLabsProvider(
             settings.elevenlabs_api_key,
