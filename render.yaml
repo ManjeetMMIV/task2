@@ -19,10 +19,10 @@ services:
       - key: RETRIEVAL_MODE
         value: cloud_dense_sparse
       - key: ANSWER_MODE
-        value: extractive
+        value: generative
       - key: CORS_ORIGINS
         sync: false
-      - key: ELEVENLABS_API_KEY
+      - key: OPENAI_API_KEY
         sync: false
       - key: QDRANT_URL
         sync: false
