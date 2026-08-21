@@ -1,7 +1,7 @@
 {
   "metadata": {
     "timestamp_utc": "2026-08-15T12:25:11.127601+00:00",
-    "note": "Isolated scale ingestions. Production hh_goa_rag index was not modified.",
+    "note": "Isolated scale ingestions. Production langrag_index index was not modified.",
     "host": {
       "total_ram_gib": 11.34,
       "free_ram_gib_at_1k_start": 2.95,
@@ -59,7 +59,7 @@
       "records_per_s": 1.43,
       "free_ram_gib_before": 2.95,
       "free_disk_gib_before": 71.36,
-      "collection": "hh_goa_rag_scale_1000",
+      "collection": "langrag_index_scale_1000",
       "dimension": 384,
       "cleaned_up": true,
       "note": "20 fewer Qdrant points than chunk emissions indicates deterministic ID collisions overwritten by upsert"

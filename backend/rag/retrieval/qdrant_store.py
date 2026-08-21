@@ -21,7 +21,7 @@ class QdrantStore:
     def __init__(
         self,
         url: str = "http://localhost:6333",
-        collection: str = "hh_goa_rag",
+        collection: str = "langrag_index",
         api_key: str | None = None,
         vector_size: int = 384,
         timeout: float = 30.0,

@@ -26,16 +26,16 @@ The deployed knowledge base is the validated Hindi validation subset:
 
 ## Qdrant Cloud production collection
 
-Do **not** query the existing `hh_goa_rag` vectors with a different embedding
+Do **not** query the existing `langrag_index` vectors with a different embedding
 model. Rebuild a dedicated collection:
 
 ```powershell
 cd backend
 $env:SOURCE_QDRANT_URL="http://127.0.0.1:6333"
-$env:SOURCE_QDRANT_COLLECTION="hh_goa_rag"
+$env:SOURCE_QDRANT_COLLECTION="langrag_index"
 $env:TARGET_QDRANT_URL="https://<cluster>.<region>.cloud.qdrant.io:6333"
 $env:TARGET_QDRANT_API_KEY="<secret>"
-$env:TARGET_QDRANT_COLLECTION="hh_goa_voice_rag_prod"
+$env:TARGET_QDRANT_COLLECTION="langrag_prod"
 $env:QDRANT_INFERENCE_MODEL="intfloat/multilingual-e5-small"
 python scripts/rebuild_cloud_collection.py
 ```
@@ -70,7 +70,7 @@ the full image. Update the Dockerfile path and deploy again with **Clear build
 cache & deploy**.
 
 ```text
-docker build -f backend/Dockerfile.free -t hh-goa-voice-rag-api:free .
+docker build -f backend/Dockerfile.free -t langrag-api:free .
 ```
 
 The Free image does **not** install Torch or SentenceTransformers. It embeds
@@ -87,7 +87,7 @@ WEB_CONCURRENCY=1
 ELEVENLABS_API_KEY=<secret>
 QDRANT_URL=https://<qdrant-cloud-host>:6333
 QDRANT_API_KEY=<secret>
-QDRANT_COLLECTION=hh_goa_voice_rag_prod
+QDRANT_COLLECTION=langrag_prod
 QDRANT_INFERENCE_MODEL=intfloat/multilingual-e5-small
 QDRANT_INFERENCE_DIMENSION=384
 CORS_ORIGINS=https://<vercel-production-domain>
@@ -140,7 +140,7 @@ Then use the public Vercel page in Chrome:
 - Keep the local Qdrant collection and snapshot unchanged.
 - Render: redeploy the previous immutable image/revision.
 - Vercel: promote the previous successful deployment.
-- Qdrant: do not delete `hh_goa_rag` during app rollback.
+- Qdrant: do not delete `langrag_index` during app rollback.
 - If cloud rebuild validation fails, stop and continue using the local system.
 
 ## Known limitations

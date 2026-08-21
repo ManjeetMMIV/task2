@@ -13,7 +13,7 @@ in local Docker simulation.
 | Local full RAG preserved | PASS (`RETRIEVAL_MODE=local` unchanged) |
 | Lightweight Free mode | PASS (`cloud_dense_sparse` + `extractive`) |
 | No local embedding model in Free image | PASS (297 MB image vs 1.98 GB full) |
-| Qdrant Cloud vector retrieval | PASS (`hh_goa_voice_rag_prod`) |
+| Qdrant Cloud vector retrieval | PASS (`langrag_prod`) |
 | Hosted model | `intfloat/multilingual-e5-small` (384-d, free) |
 | Production vectors | **11,478** verified |
 | BM25 + RRF + light reranker | PASS |

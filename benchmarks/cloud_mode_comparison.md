@@ -6,8 +6,8 @@ MEASURED on 2026-08-16 against the validated 11,478-chunk subset.
 
 | Mode | Config |
 |---|---|
-| Local full | `RETRIEVAL_MODE=local`, `ANSWER_MODE=generative`, collection `hh_goa_rag`, paraphrase-multilingual-MiniLM-L12-v2 |
-| Cloud Free | `RETRIEVAL_MODE=cloud_dense_sparse`, `ANSWER_MODE=extractive`, collection `hh_goa_voice_rag_prod`, `intfloat/multilingual-e5-small` via Qdrant Cloud Inference |
+| Local full | `RETRIEVAL_MODE=local`, `ANSWER_MODE=generative`, collection `langrag_index`, paraphrase-multilingual-MiniLM-L12-v2 |
+| Cloud Free | `RETRIEVAL_MODE=cloud_dense_sparse`, `ANSWER_MODE=extractive`, collection `langrag_prod`, `intfloat/multilingual-e5-small` via Qdrant Cloud Inference |
 
 Local source collection was **not** deleted. Production collection was rebuilt with hosted inference (11,478 points verified).
 

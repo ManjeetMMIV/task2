@@ -103,7 +103,7 @@ class ElevenLabsProvider(LLMProvider):
         if self.agent_id:
             return self.agent_id
         payload = {
-            "name": "hh-goa-rag-stage1",
+            "name": "langrag-rag-stage1",
             "conversation_config": {
                 "agent": {
                     "prompt": {

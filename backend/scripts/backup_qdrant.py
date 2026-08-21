@@ -10,7 +10,7 @@ import httpx
 
 def main() -> int:
     base_url = os.getenv("SOURCE_QDRANT_URL", "http://127.0.0.1:6333").rstrip("/")
-    collection = os.getenv("SOURCE_QDRANT_COLLECTION", "hh_goa_rag")
+    collection = os.getenv("SOURCE_QDRANT_COLLECTION", "langrag_index")
     api_key = os.getenv("SOURCE_QDRANT_API_KEY", "")
     output_dir = Path(os.getenv("QDRANT_BACKUP_DIR", "../backups/qdrant")).resolve()
     headers = {"api-key": api_key} if api_key else {}

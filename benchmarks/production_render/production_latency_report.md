@@ -1,7 +1,7 @@
 # Production RAG Latency Report (Render)
 
 - Timestamp (UTC): 2026-08-16T16:09:07.517468+00:00
-- Target: https://hacker-house-goa-task-2.onrender.com
+- Target: https://langrag.onrender.com
 - Endpoint: /api/rag/query
 - Warmup requests (excluded): 3
 - Measured requests: 22

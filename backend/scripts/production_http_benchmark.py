@@ -194,7 +194,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--base-url",
-        default="https://hacker-house-goa-task-2.onrender.com",
+        default="https://langrag.onrender.com",
         help="Live Render API origin",
     )
     parser.add_argument("--endpoint", default="/api/rag/query")

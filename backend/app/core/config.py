@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     ingest_stop_on_batch_failure: bool = True
 
     qdrant_url: str = "http://localhost:6333"
-    qdrant_collection: str = "hh_goa_rag"
+    qdrant_collection: str = "langrag_index"
     qdrant_api_key: str | None = None
     qdrant_timeout_s: float = 30.0
     qdrant_inference_model: str = "intfloat/multilingual-e5-small"

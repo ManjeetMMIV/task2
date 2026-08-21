@@ -1,7 +1,7 @@
-# 🎙️ HH Goa Voice RAG
+# 🎙️ LangRag
 
 **Voice-Enabled Retrieval-Augmented Generation over multilingual MS MARCO (AI4Bharat MSMARCO-XI)**
-Built for **Hacker House Goa 2026 — Task 2**
+Built for **Production Voice RAG**
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)
@@ -20,9 +20,9 @@ Ask a question by voice. The system transcribes it, retrieves grounded evidence 
 
 | Component | URL |
 |---|---|
-| **Frontend** | [hacker-house-goa-task-2.vercel.app](https://hacker-house-goa-task-2.vercel.app/) |
-| **Backend API** | [hacker-house-goa-task-2.onrender.com](https://hacker-house-goa-task-2.onrender.com) |
-| **Swagger / API docs** | [hacker-house-goa-task-2.onrender.com/docs](https://hacker-house-goa-task-2.onrender.com/docs) |
+| **Frontend** | [langrag.vercel.app](https://langrag.vercel.app/) |
+| **Backend API** | [langrag.onrender.com](https://langrag.onrender.com) |
+| **Swagger / API docs** | [langrag.onrender.com/docs](https://langrag.onrender.com/docs) |
 
 **Try it:**
 
@@ -64,8 +64,7 @@ Ask a question by voice. The system transcribes it, retrieves grounded evidence 
 - [Engineering Decisions](#engineering-decisions)
 - [Known Limitations](#known-limitations)
 - [Security](#security)
-- [✅ HH Goa Task 2 Requirement Mapping](#-hh-goa-task-2-requirement-mapping)
-- [📹 Hackathon Submission](#-hackathon-submission)
+- [✅ Feature Requirements Mapping](#-feature-requirements-mapping)
 - [Contributors](#contributors)
 - [Documentation Verification](#documentation-verification)
 
@@ -73,7 +72,7 @@ Ask a question by voice. The system transcribes it, retrieves grounded evidence 
 
 ## Overview
 
-HH Goa Voice RAG implements the full pipeline required by Task 2:
+LangRag implements a full end-to-end Voice RAG pipeline:
 
 ```text
 Voice Input → Speech-to-Text → Chunking / Retrieval → Vector Database
@@ -187,7 +186,7 @@ Voice queries are **not** a separate pipeline — the voice endpoint transcribes
 | Query records | 500 |
 | Passages | 9,989 |
 | Indexed chunks/points | **11,478** |
-| Qdrant collection (production) | `hh_goa_voice_rag_prod` |
+| Qdrant collection (production) | `langrag_prod` |
 | Vector config | Cosine distance, 384 dimensions |
 | Payload fields | `text`, `document_id`, `chunk_id` |
 
@@ -418,7 +417,7 @@ External APIs (ElevenLabs), Qdrant, and GPU/embedding models are mocked in backe
 Structure reflects the files and paths referenced across the project's documentation and reports. Verify the exact tree against the repository before publishing, since it was not independently re-inspected for this document.
 
 ```text
-hh-goa-voice-rag/
+langrag/
 │
 ├── backend/
 │   ├── app/
@@ -478,7 +477,7 @@ hh-goa-voice-rag/
 **Prerequisites:** Python 3.11+, Docker Desktop, Node.js (for the frontend).
 
 ```powershell
-cd hh-goa-voice-rag
+cd langrag
 docker compose up -d
 
 cd backend
@@ -546,7 +545,7 @@ WEB_CONCURRENCY=1
 ELEVENLABS_API_KEY=<secret>
 QDRANT_URL=https://<qdrant-cloud-host>:6333
 QDRANT_API_KEY=<secret>
-QDRANT_COLLECTION=hh_goa_voice_rag_prod
+QDRANT_COLLECTION=langrag_prod
 QDRANT_INFERENCE_MODEL=intfloat/multilingual-e5-small
 QDRANT_INFERENCE_DIMENSION=384
 CORS_ORIGINS=https://<vercel-production-domain>
@@ -568,19 +567,19 @@ Rebuild after changing this — Vite injects it at build time. After Vercel assi
 ### Smoke checks
 
 ```powershell
-curl.exe https://hacker-house-goa-task-2.onrender.com/health
+curl.exe https://langrag.onrender.com/health
 
-curl.exe -X POST https://hacker-house-goa-task-2.onrender.com/api/rag/query `
+curl.exe -X POST https://langrag.onrender.com/api/rag/query `
   -H "Content-Type: application/json" `
   -d '{"query":"What is a corporation?"}'
 
-curl.exe -X POST https://hacker-house-goa-task-2.onrender.com/api/voice/query `
+curl.exe -X POST https://langrag.onrender.com/api/voice/query `
   -F "audio=@data/smoke/what-is-a-corporation.wav;type=audio/wav"
 ```
 
 ### Rollback
 
-- The local Qdrant collection (`hh_goa_rag`) is never deleted during app rollback.
+- The local Qdrant collection (`langrag_index`) is never deleted during app rollback.
 - Render: redeploy the previous immutable image/revision.
 - Vercel: promote the previous successful deployment.
 - If a cloud rebuild validation fails, stop and continue using the local system.
@@ -638,13 +637,13 @@ Multipart audio-in, transcript + grounded-answer-out.
 - Default size cap: `MAX_AUDIO_SIZE_MB=20`
 
 ```powershell
-curl.exe -X POST "https://hacker-house-goa-task-2.onrender.com/api/voice/query" `
+curl.exe -X POST "https://langrag.onrender.com/api/voice/query" `
   -F "audio=@question.wav;type=audio/wav"
 ```
 
 Response includes `transcript`, the same grounded-answer fields as the text endpoint, plus voice-specific timing: `audio_validation_ms`, `stt_ms`, `transcript_validation_ms`, `rag_core_ms`, and `total_ms`.
 
-Full interactive schemas: [`/docs`](https://hacker-house-goa-task-2.onrender.com/docs) (Swagger UI).
+Full interactive schemas: [`/docs`](https://langrag.onrender.com/docs) (Swagger UI).
 
 ### Latency UI
 
@@ -698,10 +697,10 @@ These four have been directly behavior-tested with identical results before and 
 | **Lightweight lexical reranking (not a cross-encoder) in production** | A heavier local cross-encoder measurably improved MRR in dev testing but added ~805 ms — incompatible with the 200 ms target and the Free tier's compute budget. |
 | **Extractive generation in production** | Avoids multi-second LLM generation latency and memory overhead; keeps the answer deterministically grounded in retrieved text by construction. |
 | **ElevenLabs Scribe v2 for STT** | Production speech-to-text provider; measured and reported separately from the RAG-core latency budget. |
-| **Render Free-compatible deployment** | Matches the hackathon's zero-cost hosting constraint; forced the redesign away from a local embedding stack toward cloud dense inference. |
+| **Render Free-compatible deployment** | Matches zero-cost hosting constraints; forces a redesign away from a local embedding stack toward cloud dense inference. |
 | **Vercel for the frontend** | Fast static hosting for the Vite/React build with simple environment-based API base URL configuration. |
 | **Development subset instead of the full 55+ GB corpus** | Full local indexing was measured to require far more RAM/disk and embedding-compute time than available — an isolated 1K-record scale test alone peaked at 3.33 GiB RSS. |
-| **Evaluation adapter (`rag-local-eval-loop`)** | Lets the project use the standardized Hacker House harness without modifying the production RAG pipeline or the production Qdrant collection. |
+| **Evaluation adapter (`rag-local-eval-loop`)** | Lets the project use standardized evaluation harnesses without modifying the production RAG pipeline or the production Qdrant collection. |
 
 ---
 
@@ -734,14 +733,14 @@ Only protections actually implemented are listed above.
 
 ---
 
-## ✅ HH Goa Task 2 Requirement Mapping
+## ✅ Feature Requirements Mapping
 
 | Requirement | Implementation | Status |
 |---|---|---|
 | Voice input | Browser `MediaRecorder` API | ✅ |
 | Speech-to-text | ElevenLabs Scribe v2 | ✅ |
 | Thoughtful chunking (not naive fixed-size only) | Fixed / sentence / semantic / metadata-aware strategies, evaluated and compared | ✅ |
-| Vector database | Qdrant Cloud (`hh_goa_voice_rag_prod`, 11,478 points) | ✅ |
+| Vector database | Qdrant Cloud (`langrag_prod`, 11,478 points) | ✅ |
 | Retrieval | Dense (Qdrant + e5-small) + BM25 + RRF fusion | ✅ |
 | Latency < 200 ms (RAG core) | Production benchmark: Text P50 158.40 ms / Voice P50 158.80 ms | ✅ |
 | P50 / P70 / P100 reporting | Documented in [Performance](#-performance) | ✅ |
@@ -751,18 +750,6 @@ Only protections actually implemented are listed above.
 | Live deployment | Vercel (frontend) + Render (backend) | ✅ |
 | Full-corpus (55+ GB) ingestion | Not attempted; documented subset used instead | ⚠️ Documented tradeoff, not claimed complete |
 
----
-
-## 📹 Hackathon Submission
-
-Hacker House Goa 2026 requires, alongside the working submission:
-
-- A 90-second team/process video
-- A separate demo video
-- Both uploaded to Instagram, X, and LinkedIn, with every team member posting individually
-- The hashtag **#RAGInGoa**
-
-See the [Recommended Demo Flow](#-recommended-demo-flow) above for a suggested structure for the demo video.
 
 ---
 

@@ -54,7 +54,7 @@ def test_cloud_mode_requires_qdrant_credentials(tmp_path) -> None:
         answer_mode="extractive",
         qdrant_url="https://example.cloud.qdrant.io:6333",
         qdrant_api_key="",
-        qdrant_collection="hh_goa_voice_rag_prod",
+        qdrant_collection="langrag_prod",
         bm25_index_path=tmp_path / "missing.pkl",
         app_env="development",
     )
@@ -117,7 +117,7 @@ def test_build_pipeline_cloud_mode_uses_cloud_dense_and_extractive(tmp_path) -> 
         answer_mode="extractive",
         qdrant_url="https://example.cloud.qdrant.io:6333",
         qdrant_api_key="test-key",
-        qdrant_collection="hh_goa_voice_rag_prod",
+        qdrant_collection="langrag_prod",
         qdrant_inference_model="intfloat/multilingual-e5-small",
         bm25_index_path=bm25_path,
         app_env="development",

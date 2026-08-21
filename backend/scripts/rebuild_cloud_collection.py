@@ -34,11 +34,11 @@ def _client(url: str, api_key: str, *, cloud_inference: bool) -> QdrantClient:
 def main() -> int:
     source_url = os.getenv("SOURCE_QDRANT_URL", "http://127.0.0.1:6333").strip()
     source_key = os.getenv("SOURCE_QDRANT_API_KEY", "").strip()
-    source_collection = os.getenv("SOURCE_QDRANT_COLLECTION", "hh_goa_rag").strip()
+    source_collection = os.getenv("SOURCE_QDRANT_COLLECTION", "langrag_index").strip()
 
     target_url = os.getenv("TARGET_QDRANT_URL", "").strip()
     target_key = os.getenv("TARGET_QDRANT_API_KEY", "").strip()
-    target_collection = os.getenv("TARGET_QDRANT_COLLECTION", "hh_goa_voice_rag_prod").strip()
+    target_collection = os.getenv("TARGET_QDRANT_COLLECTION", "langrag_prod").strip()
     inference_model = os.getenv(
         "QDRANT_INFERENCE_MODEL",
         "intfloat/multilingual-e5-small",

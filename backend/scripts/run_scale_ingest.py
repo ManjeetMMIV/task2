@@ -90,7 +90,7 @@ def run_scale(records: int, *, cleanup: bool = True) -> dict:
 
     scale_root = base.project_root / "data" / "scale" / f"records_{records}"
     scale_root.mkdir(parents=True, exist_ok=True)
-    collection = f"hh_goa_rag_scale_{records}"
+    collection = f"langrag_index_scale_{records}"
     settings = Settings(
         ingest_mode="subset",
         max_documents=records,
@@ -188,7 +188,7 @@ def write_reports(rows: list[dict], output_dir: Path) -> None:
     payload = {
         "metadata": {
             "timestamp_utc": datetime.now(timezone.utc).isoformat(),
-            "note": "Isolated scale ingestions. Production hh_goa_rag index was not modified.",
+            "note": "Isolated scale ingestions. Production langrag_index index was not modified.",
         },
         "scales": rows,
     }

@@ -1,7 +1,7 @@
 {
   "metadata": {
     "timestamp_utc": "2026-08-18T13:33:09.440407+00:00",
-    "base_url": "https://hacker-house-goa-task-2.onrender.com",
+    "base_url": "https://langrag.onrender.com",
     "endpoint": "/api/rag/query",
     "warmup_queries": 3,
     "request_count": 66,

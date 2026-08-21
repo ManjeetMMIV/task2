@@ -28,7 +28,7 @@ def main() -> int:
     source_key = os.getenv("SOURCE_QDRANT_API_KEY", "")
     target_url = os.getenv("TARGET_QDRANT_URL", "").strip()
     target_key = os.getenv("TARGET_QDRANT_API_KEY", "")
-    source_collection = os.getenv("SOURCE_QDRANT_COLLECTION", "hh_goa_rag")
+    source_collection = os.getenv("SOURCE_QDRANT_COLLECTION", "langrag_index")
     target_collection = os.getenv("TARGET_QDRANT_COLLECTION", source_collection)
     batch_size = int(os.getenv("QDRANT_MIGRATION_BATCH_SIZE", "256"))
 

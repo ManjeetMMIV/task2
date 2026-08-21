@@ -13,7 +13,7 @@ Chrome microphone
   → FastAPI
   → ElevenLabs Scribe v2
   → local MiniLM query embedding
-  → Qdrant (local or cloud copy of hh_goa_rag)
+  → Qdrant (local or cloud copy of langrag_index)
   + persisted BM25
   → Reciprocal Rank Fusion
   → optional CrossEncoder reranker
@@ -51,7 +51,7 @@ Config:
 ```text
 RETRIEVAL_MODE=cloud_dense_sparse
 ANSWER_MODE=extractive
-QDRANT_COLLECTION=hh_goa_voice_rag_prod
+QDRANT_COLLECTION=langrag_prod
 QDRANT_INFERENCE_MODEL=intfloat/multilingual-e5-small
 ```
 
@@ -68,8 +68,8 @@ cluster include `intfloat/multilingual-e5-small` and
 `sentence-transformers/all-MiniLM-L6-v2` (both 384-d).
 
 Document and query embeddings must use the same model. Therefore production
-uses a dedicated collection (`hh_goa_voice_rag_prod`) rebuilt with hosted
-inference. Local `hh_goa_rag` is never overwritten.
+uses a dedicated collection (`langrag_prod`) rebuilt with hosted
+inference. Local `langrag_index` is never overwritten.
 
 ## Runtime boundaries
 
@@ -92,8 +92,8 @@ inference. Local `hh_goa_rag` is never overwritten.
 
 ### Storage
 
-- Local/reference: `hh_goa_rag`, 11,478 vectors, paraphrase-multilingual MiniLM
-- Production Free: `hh_goa_voice_rag_prod`, 11,478 vectors, multilingual-e5-small
+- Local/reference: `langrag_index`, 11,478 vectors, paraphrase-multilingual MiniLM
+- Production Free: `langrag_prod`, 11,478 vectors, multilingual-e5-small
   via Qdrant Cloud Inference
 - Container image: persisted BM25 index for the same 11,478 chunk IDs
 - Local Docker Qdrant and snapshot remain the rollback/reference copy

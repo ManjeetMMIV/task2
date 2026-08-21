@@ -8,7 +8,7 @@ RRF behavior, reranker, grounding, guardrail, or frontend behavior was changed.
 
 ## Production baseline
 
-Target: `https://hacker-house-goa-task-2.onrender.com/api/rag/query`
+Target: `https://langrag.onrender.com/api/rag/query`
 
 - Warmup: 3 requests (excluded)
 - Measured: 66 requests

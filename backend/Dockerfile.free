@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     DEPLOYMENT_PROFILE=render_free \
     RETRIEVAL_MODE=cloud_dense_sparse \
     ANSWER_MODE=extractive \
-    QDRANT_COLLECTION=hh_goa_voice_rag_prod \
+    QDRANT_COLLECTION=langrag_prod \
     QDRANT_INFERENCE_MODEL=intfloat/multilingual-e5-small \
     QDRANT_INFERENCE_DIMENSION=384
 

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: hh-goa-voice-rag-api
+    name: langrag-api
     runtime: docker
     plan: free
     dockerfilePath: ./backend/Dockerfile.free
@@ -29,7 +29,7 @@ services:
       - key: QDRANT_API_KEY
         sync: false
       - key: QDRANT_COLLECTION
-        value: hh_goa_voice_rag_prod
+        value: langrag_prod
       - key: QDRANT_INFERENCE_MODEL
         value: intfloat/multilingual-e5-small
       - key: QDRANT_INFERENCE_DIMENSION

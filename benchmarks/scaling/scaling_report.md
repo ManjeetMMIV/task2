@@ -1,6 +1,6 @@
 # Scaling Report
 
-MEASURED isolated ingestions. Production collection `hh_goa_rag` was not modified.
+MEASURED isolated ingestions. Production collection `langrag_index` was not modified.
 
 Host at test time: **11.34 GiB RAM**, **~2.95 GiB free** before 1K, **71.36 GiB free** on `E:`.
 
@@ -21,7 +21,7 @@ Skip reasons:
 
 ## Notes
 
-- Isolated 1K used temporary collection `hh_goa_rag_scale_1000` and was deleted afterward.
+- Isolated 1K used temporary collection `langrag_index_scale_1000` and was deleted afterward.
 - Qdrant reported 22,553 points vs 22,573 emitted chunks (20 deterministic ID collisions overwritten by upsert).
 - Embedding dominated wall time (538s of 701s). Qdrant upsert was 15.4s; BM25 rebuild/save 31.7s.
 - Existing Qdrant search-latency copy benchmark (Stage 2/3): P50 ≈ 30.7–30.8 ms at 1K / 10K / 11.5K vectors.

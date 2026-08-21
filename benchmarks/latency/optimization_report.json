@@ -4,7 +4,7 @@
     "query_count": 100,
     "generation": "disabled with deterministic local refusal provider",
     "reranker": "disabled via IdentityReranker",
-    "baseline_source": "E:\\Hackathons\\Hacker House GOA Task 2\\hh-goa-voice-rag\\benchmarks\\latency\\latency_report.json",
+    "baseline_source": "E:\\Hackathons\\LangRag Project\\langrag\\benchmarks\\latency\\latency_report.json",
     "recommended_parallel_retrieval": true
   },
   "before": {
@@ -165,6 +165,6 @@
       "mrr": 0.399563492063492,
       "ndcg_at_10": 0.49939100450060353
     },
-    "source": "E:\\Hackathons\\Hacker House GOA Task 2\\hh-goa-voice-rag\\benchmarks\\retrieval\\retrieval_report.json"
+    "source": "E:\\Hackathons\\LangRag Project\\langrag\\benchmarks\\retrieval\\retrieval_report.json"
   }
 }

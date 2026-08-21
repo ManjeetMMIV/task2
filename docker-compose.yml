@@ -1,7 +1,7 @@
 services:
   qdrant:
     image: qdrant/qdrant:v1.13.6
-    container_name: hh-goa-qdrant
+    container_name: langrag-qdrant
     ports:
       - "6333:6333"
       - "6334:6334"

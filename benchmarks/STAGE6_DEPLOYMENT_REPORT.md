@@ -42,7 +42,7 @@ are authenticated and a real public-browser test succeeds.
 
 ## Local container verification (MEASURED)
 
-Image: `hh-goa-voice-rag-api:stage6` (~1.98 GB)
+Image: `langrag-api:stage6` (~1.98 GB)
 
 Health:
 
