@@ -5,8 +5,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from app.core.config import Settings
-from app.dependencies import build_pipeline, validate_deployment_profile
 from app.core.exceptions import EmbeddingError
+from app.dependencies import build_pipeline, validate_deployment_profile
 from rag.generation.extractive import ExtractiveAnswerProvider
 from rag.generation.prompts import REFUSAL_MESSAGE, build_user_prompt
 from rag.reranking.lexical import LexicalLightReranker
@@ -140,10 +140,12 @@ def test_cloud_dense_search_delegates_to_inference_store() -> None:
     store.search_with_inference.return_value = [
         RetrievalResult("A corporation is a legal entity.", 0.8, "d1", "c1")
     ]
-    dense = CloudDenseRetriever(store, inference_model="intfloat/multilingual-e5-small", dimension=384)
+    dense = CloudDenseRetriever(
+        store, inference_model="intfloat/multilingual-e5-small", dimension=384
+    )
     out = dense.search("What is a corporation?", top_k=5)
     store.search_with_inference.assert_called_once_with(
-        "What is a corporation?",
+        "query: What is a corporation?",
         model="intfloat/multilingual-e5-small",
         top_k=5,
     )
@@ -157,7 +159,9 @@ def test_lexical_coverage_cross_script_passes_with_dense_confidence() -> None:
     guard = LexicalCoverageGuard(min_overlap=0.34, min_cross_script_dense_score=0.52)
     # Gujarati query with English context
     results = [RetrievalResult("A corporation is an incorporated legal entity.", 0.016, "d1", "c1")]
-    dense_results = [RetrievalResult("A corporation is an incorporated legal entity.", 0.69, "d1", "c1")]
+    dense_results = [
+        RetrievalResult("A corporation is an incorporated legal entity.", 0.69, "d1", "c1")
+    ]
     cov = guard.check(". શું એક કોર્પોરેશન છે?", results, dense_results=dense_results)
     assert cov.ok is True
     assert cov.reason == "cross_script_semantic_match"
@@ -200,5 +204,3 @@ def test_code_mixed_hinglish_reranking_and_extraction() -> None:
     assert "corporation" in result.text.lower()
     assert "चलन" not in result.text
     assert result.text != REFUSAL_MESSAGE
-
-

@@ -29,6 +29,10 @@ def validate_deployment_profile(settings: Settings) -> None:
             "Cloud deployment attempted to initialize local embedding model. "
             "Render Free requires RETRIEVAL_MODE=cloud_dense_sparse."
         )
+    if settings.answer_mode != "extractive":
+        raise RuntimeError(
+            "Render Free requires ANSWER_MODE=extractive to run without generative LLM overhead."
+        )
 
 
 def build_pipeline(settings: Settings) -> RAGPipeline:
@@ -42,7 +46,9 @@ def build_pipeline(settings: Settings) -> RAGPipeline:
         if not (settings.qdrant_api_key or "").strip():
             raise RuntimeError("QDRANT_API_KEY is required for cloud_dense_sparse retrieval")
         if not (settings.qdrant_inference_model or "").strip():
-            raise RuntimeError("QDRANT_INFERENCE_MODEL is required for cloud_dense_sparse retrieval")
+            raise RuntimeError(
+                "QDRANT_INFERENCE_MODEL is required for cloud_dense_sparse retrieval"
+            )
         store = QdrantStore(
             url=settings.qdrant_url,
             collection=settings.qdrant_collection,

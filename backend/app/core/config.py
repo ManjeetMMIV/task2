@@ -13,7 +13,7 @@ PROJECT_ROOT = BACKEND_DIR.parent
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=str(BACKEND_DIR / ".env"),
+        env_file=(str(PROJECT_ROOT / ".env"), str(BACKEND_DIR / ".env")),
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -59,8 +59,7 @@ class Settings(BaseSettings):
     embedding_batch_size: int = 64
     embedding_device: str = "cpu"
     embedding_eval_models: str = (
-        "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2,"
-        "intfloat/multilingual-e5-small"
+        "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2,intfloat/multilingual-e5-small"
     )
 
     reranker_model: str = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
