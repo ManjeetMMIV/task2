@@ -23,6 +23,7 @@ export function useVoiceRecorder({
   onRecordingReady,
 }: RecorderOptions) {
   const [isRecording, setIsRecording] = useState(false)
+  const [stream, setStream] = useState<MediaStream | null>(null)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const recorderRef = useRef<MediaRecorder | null>(null)
@@ -34,6 +35,7 @@ export function useVoiceRecorder({
   const cleanupStream = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop())
     streamRef.current = null
+    setStream(null)
     if (timerRef.current !== null) window.clearInterval(timerRef.current)
     timerRef.current = null
   }, [])
@@ -58,10 +60,11 @@ export function useVoiceRecorder({
       return
     }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true })
       const mimeType = supportedMimeType()
-      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream)
-      streamRef.current = stream
+      const recorder = mimeType ? new MediaRecorder(mediaStream, { mimeType }) : new MediaRecorder(mediaStream)
+      streamRef.current = mediaStream
+      setStream(mediaStream)
       recorderRef.current = recorder
       chunksRef.current = []
       cancelledRef.current = false
@@ -114,6 +117,7 @@ export function useVoiceRecorder({
 
   return {
     isRecording,
+    stream,
     elapsedSeconds,
     error,
     setError,

@@ -1,22 +1,24 @@
 import { useCallback, useEffect, useState } from 'react'
-import { FiAlertCircle, FiArrowRight, FiRefreshCw } from 'react-icons/fi'
+import { FiAlertCircle, FiArrowRight, FiRefreshCw, FiVolume2 } from 'react-icons/fi'
 import { getHealth, submitVoiceQuery, warmupRag } from './api/ragApi'
 import { AnswerPanel } from './components/AnswerPanel'
 import { EvidenceCard } from './components/EvidenceCard'
-import { Header } from './components/Header'
 import { LatencyPanel } from './components/LatencyPanel'
 import { PipelineStrip } from './components/PipelineStrip'
 import { ProcessingState } from './components/ProcessingState'
 import { RequestMeta } from './components/RequestMeta'
 import { VoiceRecorder } from './components/VoiceRecorder'
 import { useVoiceRecorder } from './hooks/useVoiceRecorder'
+import type { OrbState } from './types/orb'
 import type { ExperienceState, SystemStatus, VoiceRagResponse } from './types/rag'
 
 function App() {
   const [state, setState] = useState<ExperienceState>('idle')
   const [result, setResult] = useState<VoiceRagResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [systemStatus, setSystemStatus] = useState<SystemStatus>('preparing')
+  const [, setSystemStatus] = useState<SystemStatus>('preparing')
+  const [activeOrbState, setActiveOrbState] = useState<OrbState>('idle')
+  const [isSpeaking, setIsSpeaking] = useState(false)
 
   useEffect(() => {
     let mounted = true
@@ -45,17 +47,20 @@ function App() {
     }
   }, [])
 
-
   const handleRecording = useCallback(async (blob: Blob) => {
     setState('processing')
+    setActiveOrbState('thinking')
+    setIsSpeaking(false)
     setError(null)
     try {
       const response = await submitVoiceQuery(blob)
       setResult(response)
       setState(response.refused ? 'refused' : 'success')
+      setActiveOrbState('idle')
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Something went wrong. Please try again.')
       setState('error')
+      setActiveOrbState('idle')
     }
   }, [])
 
@@ -65,40 +70,62 @@ function App() {
     if (recorder.error) {
       setError(recorder.error)
       setState('error')
+      setActiveOrbState('idle')
     }
   }, [recorder.error])
 
   const start = async () => {
     setResult(null)
     setError(null)
+    setIsSpeaking(false)
     recorder.setError(null)
     setState('idle')
+    setActiveOrbState('listening')
     await recorder.startRecording()
   }
 
   useEffect(() => {
-    if (recorder.isRecording) setState('recording')
+    if (recorder.isRecording) {
+      setState('recording')
+      setActiveOrbState('listening')
+    }
   }, [recorder.isRecording])
 
+  // Derive current visual state for the orb
+  const currentOrbState: OrbState = isSpeaking
+    ? 'speaking'
+    : recorder.isRecording || state === 'recording'
+      ? 'listening'
+      : state === 'processing'
+        ? 'thinking'
+        : activeOrbState
+
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="relative min-h-screen text-slate-800 flex flex-col justify-between">
+      {/* Subtle micro-texture layer */}
       <div className="noise-layer" aria-hidden="true" />
-      <div className="relative mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
-        <Header status={systemStatus} />
 
-        <main className="py-8 sm:py-16 flex flex-col items-center text-center">
-          <div className="mb-10 flex flex-col items-center">
-            <p className="font-mono text-xs uppercase tracking-[0.26em] text-indigo-600 font-semibold">Voice-first retrieval</p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl">
-              Ask. Retrieve. Answer with evidence.
-            </h2>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-600">
-              ElevenLabs speech recognition meets hybrid retrieval and transparent grounding. Every result shows measured latency, grounding status, and compact evidence.
-            </p>
-          </div>
+      {/* Main Experience Container (No Nav Bar) */}
+      <main className="relative z-10 mx-auto w-full max-w-3xl px-4 pt-12 pb-16 sm:px-6 sm:pt-20 sm:pb-24 flex flex-col items-center">
+        {/* Subtle Brand Watermark & Tag */}
+        <div className="mb-6 flex flex-col items-center text-center">
+          <span className="font-mono text-[10px] uppercase font-medium tracking-[0.3em] text-slate-400">
+            Aura Voice AI
+          </span>
+          <h2 className="mt-3 font-serif text-4xl sm:text-6xl font-normal tracking-tight text-slate-900 leading-[1.15]">
+            Ask. Retrieve. Answer with evidence.
+          </h2>
+          <p className="mt-3.5 max-w-lg text-sm sm:text-base text-slate-500 font-light leading-relaxed">
+            ElevenLabs speech recognition meets hybrid retrieval and transparent grounding. Every result shows measured latency, grounding status, and compact evidence.
+          </p>
+        </div>
 
+        {/* Liquid Glass Orb Hero Interaction */}
+        <div className="w-full mt-4">
           <VoiceRecorder
             state={state}
+            stream={recorder.stream}
+            orbStateOverride={currentOrbState}
             elapsedSeconds={recorder.elapsedSeconds}
             supported={recorder.supported}
             onStart={start}
@@ -106,58 +133,101 @@ function App() {
             onCancel={() => {
               recorder.cancelRecording()
               setState('idle')
+              setActiveOrbState('idle')
+              setIsSpeaking(false)
             }}
           />
+        </div>
 
-          {error && (
-            <section className="mt-5 flex flex-col gap-4 rounded-2xl border border-rose-300/15 bg-rose-300/5 p-5 sm:flex-row sm:items-center" role="alert">
-              <FiAlertCircle className="size-6 shrink-0 text-rose-300" aria-hidden="true" />
-              <div className="flex-1">
-                <p className="font-medium text-rose-100">Something went wrong while processing your request.</p>
-                <p className="mt-1 text-sm text-rose-200/65">{error}</p>
-              </div>
-              <button type="button" onClick={start} className="secondary-button">
-                <FiRefreshCw aria-hidden="true" /> Try again
-              </button>
-            </section>
-          )}
-
-          {state === 'processing' && <div className="mt-8 w-full max-w-2xl mx-auto"><ProcessingState /></div>}
-
-          {result && (state === 'success' || state === 'refused') && (
-            <div className="mt-10 space-y-6 w-full max-w-3xl mx-auto text-left">
-              <AnswerPanel result={result} />
-              <div className="grid sm:grid-cols-2 gap-4">
-                <LatencyPanel latency={result.latency} />
-                <div className="flex items-center">
-                  <button type="button" onClick={start} className="primary-button w-full h-full">
-                    Ask another question <FiArrowRight aria-hidden="true" />
-                  </button>
-                </div>
-              </div>
-              <PipelineStrip />
-              <EvidenceCard result={result} />
-              <RequestMeta result={result} />
+        {/* Error Alert */}
+        {error && (
+          <section
+            className="mt-6 w-full flex flex-col gap-4 rounded-2xl border border-rose-200/80 bg-rose-50/80 backdrop-blur-md p-5 sm:flex-row sm:items-center shadow-xs"
+            role="alert"
+          >
+            <FiAlertCircle className="size-6 shrink-0 text-rose-500" aria-hidden="true" />
+            <div className="flex-1">
+              <p className="font-medium text-rose-950">Something went wrong while processing your request.</p>
+              <p className="mt-0.5 text-xs sm:text-sm text-rose-700 font-light">{error}</p>
             </div>
-          )}
+            <button type="button" onClick={start} className="secondary-button shrink-0">
+              <FiRefreshCw aria-hidden="true" /> Try again
+            </button>
+          </section>
+        )}
 
-          {!result && state === 'idle' && !error && (
-            <section className="mt-10 grid gap-4 sm:grid-cols-2 w-full max-w-3xl mx-auto text-left">
-              {['What causes high blood pressure?', 'What is a corporation?'].map((question) => (
-                <div key={question} className="rounded-xl border border-slate-200 bg-white px-5 py-5 shadow-sm transition-shadow hover:shadow-md cursor-default">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-indigo-500 font-semibold">Try asking</p>
-                  <p className="mt-2 text-sm font-medium text-slate-700">“{question}”</p>
-                </div>
-              ))}
-            </section>
-          )}
-        </main>
+        {/* Processing State Indicator */}
+        {state === 'processing' && (
+          <div className="mt-8 w-full max-w-2xl mx-auto">
+            <ProcessingState />
+          </div>
+        )}
 
-        <footer className="flex flex-col items-center gap-3 border-t border-slate-200 py-8 text-xs text-slate-500 sm:flex-row sm:justify-between w-full max-w-3xl mx-auto">
-          <span className="font-medium">HH Goa 2026 · Voice RAG</span>
-          <span>Actual request timings · No fake streaming · Grounded responses</span>
-        </footer>
-      </div>
+        {/* Grounded RAG Results Display */}
+        {result && (state === 'success' || state === 'refused') && (
+          <div className="mt-12 space-y-6 w-full text-left animate-fade-in">
+            <AnswerPanel result={result} />
+            <div className="grid sm:grid-cols-2 gap-4">
+              <LatencyPanel latency={result.latency} />
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsSpeaking((prev) => !prev)}
+                  className="secondary-button flex-1"
+                  aria-label={isSpeaking ? 'Pause AI voice' : 'Listen to AI voice'}
+                >
+                  <FiVolume2 className={`size-4 ${isSpeaking ? 'text-indigo-600 animate-pulse' : ''}`} aria-hidden="true" />
+                  {isSpeaking ? 'Speaking…' : 'Simulate voice'}
+                </button>
+                <button type="button" onClick={start} className="primary-button flex-1">
+                  Ask another question <FiArrowRight aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+            <PipelineStrip />
+            <EvidenceCard result={result} />
+            <RequestMeta result={result} />
+          </div>
+        )}
+
+        {/* Suggested Starter Questions — Glassmorphism Cards */}
+        {!result && state === 'idle' && !error && (
+          <section className="mt-12 grid gap-4 sm:grid-cols-2 w-full text-left">
+            {['What causes high blood pressure?', 'What is a corporation?'].map((question) => (
+              <div
+                key={question}
+                className="group p-5 transition-all duration-300 cursor-default"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.35)',
+                  backdropFilter: 'blur(20px) saturate(170%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(170%)',
+                  borderRadius: '1rem',
+                  border: '1px solid rgba(255, 255, 255, 0.6)',
+                  boxShadow: '0 8px 32px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02), inset 0 1px 1px rgba(255, 255, 255, 0.9)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.55)'
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.8)'
+                  e.currentTarget.style.boxShadow = '0 12px 40px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.35)'
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)'
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02), inset 0 1px 1px rgba(255, 255, 255, 0.9)'
+                }}
+              >
+                <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-slate-400 font-semibold">Try asking</p>
+                <p className="mt-2 font-serif text-base font-normal text-slate-800 leading-snug">“{question}”</p>
+              </div>
+            ))}
+          </section>
+        )}
+      </main>
+
+      {/* Minimal End-Product Footer */}
+      <footer className="relative z-10 w-full max-w-3xl mx-auto px-4 border-t border-slate-200/50 py-8 text-xs text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-3 font-light">
+        <span>TRICALITES</span>
+      </footer>
     </div>
   )
 }

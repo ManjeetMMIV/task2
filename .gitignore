@@ -50,3 +50,4 @@ benchmarks/stage6b_*.txt
 benchmarks/stage6b_free_voice.json
 benchmarks/stage6b_free_refusal.json
 
+.agents
