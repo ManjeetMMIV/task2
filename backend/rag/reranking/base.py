@@ -7,5 +7,6 @@ from rag.retrieval.types import RetrievalResult
 
 class Reranker(ABC):
     @abstractmethod
-    def rerank(self, query: str, candidates: list[RetrievalResult], top_k: int) -> list[RetrievalResult]:
-        ...
+    def rerank(
+        self, query: str, candidates: list[RetrievalResult], top_k: int
+    ) -> list[RetrievalResult]: ...

@@ -1,14 +1,14 @@
 from fastapi.testclient import TestClient
 
-from app.main import create_app
+from app.core.config import Settings
 from app.core.exceptions import GenerationError, STTError
+from app.main import create_app
 from rag.pipeline import RAGPipeline
 from rag.retrieval.bm25 import BM25Index
 from rag.retrieval.dense import DenseRetriever
 from rag.retrieval.hybrid import HybridRetriever
 from rag.retrieval.types import RetrievalResult
-from tests.conftest import FakeEmbeddings, FakeLLM, FakeReranker, FakeSTT, FakeStore
-from app.core.config import Settings
+from tests.conftest import FakeEmbeddings, FakeLLM, FakeReranker, FakeStore, FakeSTT
 
 
 def _client() -> TestClient:
@@ -185,4 +185,3 @@ def test_rag_warmup_uninitialized() -> None:
     client = TestClient(app)
     response = client.get("/api/rag/warmup")
     assert response.status_code == 503
-

@@ -7,7 +7,7 @@ import json
 import sys
 import time
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
@@ -92,8 +92,13 @@ def main() -> int:
     )
     query_rows = []
     for record in records:
-        for language, query in (("en", record.english_query), (record.target_lang.split("_")[0], record.query)):
-            relevant = {p.document_id for p in record.passages if p.language == language and p.is_selected}
+        for language, query in (
+            ("en", record.english_query),
+            (record.target_lang.split("_")[0], record.query),
+        ):
+            relevant = {
+                p.document_id for p in record.passages if p.language == language and p.is_selected
+            }
             if query and relevant:
                 query_rows.append({"query": query, "language": language, "relevant": relevant})
     query_vectors = embeddings.embed_documents([row["query"] for row in query_rows])
@@ -149,9 +154,7 @@ def main() -> int:
                 top_k=settings.hybrid_top_k,
             )
             retrieval_times.append((time.perf_counter() - started) * 1000)
-            metric_rows.append(
-                score_ranking(query_row["relevant"], _dedupe_doc_ids(hybrid))
-            )
+            metric_rows.append(score_ranking(query_row["relevant"], _dedupe_doc_ids(hybrid)))
         metrics = aggregate_metrics(metric_rows)
         text_bytes = sum(len(chunk.text.encode("utf-8")) for chunk in chunks)
         raw_vector_bytes = len(chunks) * embeddings.dimension * 4
@@ -173,7 +176,7 @@ def main() -> int:
         print(f"{strategy}: chunks={len(chunks)} recall@10={metrics.recall_at_10:.4f}")
 
     metadata = {
-        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "timestamp_utc": datetime.now(UTC).isoformat(),
         "source_record_count": len(records),
         "query_count": len(query_rows),
         "embedding_model": settings.embedding_model,

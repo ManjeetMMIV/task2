@@ -1,0 +1,75 @@
+[project]
+name = "langrag"
+version = "0.6.0"
+description = "Voice-Enabled Retrieval-Augmented Generation over multilingual MS MARCO"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.6.0",
+    "python-dotenv>=1.0.1",
+    "httpx>=0.27.2",
+    "python-multipart>=0.0.20",
+    "datasets>=3.1.0",
+    "huggingface_hub>=0.26.0",
+    "pyarrow>=17.0.0",
+    "sentence-transformers>=3.3.1",
+    "qdrant-client>=1.12.1",
+    "rank-bm25>=0.2.2",
+    "numpy>=1.26.4",
+    "pandas>=2.2.3",
+    "scikit-learn>=1.5.2",
+    "psutil>=6.0.0",
+    "openai>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.9.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app", "rag", "evaluation"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "node_modules",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort (import sorting)
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+]
+ignore = [
+    "E501",  # line length handled by formatter
+    "B008",  # do not perform function calls in argument defaults (FastAPI Depends)
+    "B905",  # zip() strict parameter
+    "B007",  # loop control variable not used
+]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = ["E402", "F401"]
+"tests/*" = ["B011", "BLE001", "F401", "E402"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

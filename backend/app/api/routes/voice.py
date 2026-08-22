@@ -31,14 +31,18 @@ def _validate_upload(upload: UploadFile, audio: bytes, max_bytes: int) -> None:
     if not audio:
         raise InvalidAudioError("Audio file is empty")
     if len(audio) > max_bytes:
-        raise InvalidAudioError(f"Audio file exceeds the configured {max_bytes // (1024 * 1024)} MB limit")
+        raise InvalidAudioError(
+            f"Audio file exceeds the configured {max_bytes // (1024 * 1024)} MB limit"
+        )
     extension = Path(filename).suffix.lower()
     allowed_types = _MIME_BY_EXTENSION.get(extension)
     if allowed_types is None:
         raise InvalidAudioError("Unsupported audio format. Upload WAV, MP3, M4A, or WebM.")
     # Browsers include codec parameters (for example audio/webm;codecs=opus).
     # Validate the media type while preserving the original value for the STT upload.
-    content_type = (upload.content_type or "application/octet-stream").split(";", 1)[0].strip().lower()
+    content_type = (
+        (upload.content_type or "application/octet-stream").split(";", 1)[0].strip().lower()
+    )
     if content_type not in allowed_types:
         raise InvalidAudioError(f"Content type {content_type!r} does not match {extension} audio")
 
@@ -82,18 +86,26 @@ def voice_query(
     try:
         _validate_upload(audio, audio_bytes, max_bytes)
     except InvalidAudioError as exc:
-        raise HTTPException(status_code=exc.status_code, detail={"error": exc.message, "code": exc.code}) from exc
+        raise HTTPException(
+            status_code=exc.status_code, detail={"error": exc.message, "code": exc.code}
+        ) from exc
     audio_validation_ms = (time.perf_counter() - validation_started) * 1000
 
     pipeline = getattr(request.app.state, "pipeline", None)
     stt = getattr(request.app.state, "stt", None)
     if pipeline is None or stt is None:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Voice RAG is not initialized")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Voice RAG is not initialized"
+        )
 
     try:
         # Concurrently prime/keep-alive the Qdrant Cloud connection while ElevenLabs STT executes.
         prewarm_future = None
-        if hasattr(pipeline, "hybrid") and hasattr(pipeline.hybrid, "dense") and hasattr(pipeline.hybrid, "_executor"):
+        if (
+            hasattr(pipeline, "hybrid")
+            and hasattr(pipeline.hybrid, "dense")
+            and hasattr(pipeline.hybrid, "_executor")
+        ):
             try:
                 prewarm_future = pipeline.hybrid._executor.submit(
                     pipeline.hybrid.dense.search, "warmup", 1
@@ -129,9 +141,13 @@ def voice_query(
                 "error_code": exc.code,
             },
         )
-        raise HTTPException(status_code=exc.status_code, detail={"error": exc.message, "code": exc.code}) from exc
+        raise HTTPException(
+            status_code=exc.status_code, detail={"error": exc.message, "code": exc.code}
+        ) from exc
     except RAGError as exc:
-        raise HTTPException(status_code=exc.status_code, detail={"error": exc.message, "code": exc.code}) from exc
+        raise HTTPException(
+            status_code=exc.status_code, detail={"error": exc.message, "code": exc.code}
+        ) from exc
 
     rag_latency = rag.latency.model_dump()
     rag_latency.pop("total_ms", None)
@@ -139,10 +155,7 @@ def voice_query(
     rag_latency.pop("unaccounted_ms", None)
     total_ms = (time.perf_counter() - started) * 1000
     voice_component_sum_ms = (
-        audio_validation_ms
-        + transcript.latency_ms
-        + transcript_validation_ms
-        + rag_ms
+        audio_validation_ms + transcript.latency_ms + transcript_validation_ms + rag_ms
     )
     latency = VoiceLatencyBreakdown(
         **rag_latency,

@@ -7,7 +7,7 @@ import json
 import sys
 import time
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,13 +16,13 @@ if str(ROOT) not in sys.path:
 
 from app.core.config import get_settings
 from app.core.logging import configure_logging, get_logger
-from evaluation.retrieval_eval import RetrievalMetrics, aggregate_metrics, score_ranking
+from evaluation.retrieval_eval import aggregate_metrics, score_ranking
 from rag.embeddings.local import LocalEmbeddingProvider
 from rag.reranking.cross_encoder import CrossEncoderReranker
 from rag.retrieval.bm25 import BM25Index
 from rag.retrieval.dense import DenseRetriever
-from rag.retrieval.hybrid import HybridRetriever
 from rag.retrieval.fusion import reciprocal_rank_fusion, weighted_fusion
+from rag.retrieval.hybrid import HybridRetriever
 from rag.retrieval.qdrant_store import QdrantStore
 
 
@@ -39,7 +39,9 @@ def _ids(results) -> list[str]:
 
 def _write_reports(output_dir: Path, rows: list[dict], metadata: dict) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
-    with (output_dir / "retrieval_comparison.csv").open("w", newline="", encoding="utf-8") as handle:
+    with (output_dir / "retrieval_comparison.csv").open(
+        "w", newline="", encoding="utf-8"
+    ) as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
@@ -89,7 +91,9 @@ def main() -> int:
         return 1
     bm25 = BM25Index.load(settings.bm25_index_path)
     dense = DenseRetriever(embeddings, store)
-    hybrid = HybridRetriever(dense, bm25, fusion_method=settings.fusion_method, rrf_k=settings.rrf_k)
+    hybrid = HybridRetriever(
+        dense, bm25, fusion_method=settings.fusion_method, rrf_k=settings.rrf_k
+    )
     reranker = CrossEncoderReranker(settings.reranker_model, device=settings.reranker_device)
 
     queries = bm25.evaluation_queries(limit=settings.eval_queries)
@@ -160,7 +164,7 @@ def main() -> int:
             }
         )
     metadata = {
-        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "timestamp_utc": datetime.now(UTC).isoformat(),
         "query_count": len(queries),
         "index_chunk_count": len(bm25),
         "embedding_model": settings.embedding_model,

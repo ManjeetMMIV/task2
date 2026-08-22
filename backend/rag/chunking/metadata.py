@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import re
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 from rag.chunking.base import Chunk
 
@@ -54,7 +55,9 @@ def split_sentences(text: str) -> list[str]:
     return sentences or [text]
 
 
-def pack_sentences(sentences: Iterable[str], max_chars: int, overlap_sentences: int = 1) -> list[str]:
+def pack_sentences(
+    sentences: Iterable[str], max_chars: int, overlap_sentences: int = 1
+) -> list[str]:
     items = [s for s in sentences if s]
     if not items:
         return []

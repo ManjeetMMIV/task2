@@ -11,7 +11,7 @@ import json
 import sys
 import time
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -48,11 +48,7 @@ def _query_set(pipeline, n: int, max_query_chars: int) -> tuple[list[dict[str, A
     rows = pipeline.hybrid.bm25.evaluation_queries()
     if not rows:
         raise RuntimeError("BM25 index has no labeled evaluation queries; ingest first")
-    valid_rows = [
-        row
-        for row in rows
-        if 0 < len(" ".join(row["query"].split())) <= max_query_chars
-    ]
+    valid_rows = [row for row in rows if 0 < len(" ".join(row["query"].split())) <= max_query_chars]
     excluded_invalid = len(rows) - len(valid_rows)
     if not valid_rows:
         raise RuntimeError("BM25 index has no valid labeled evaluation queries")
@@ -79,7 +75,19 @@ def _write_reports(
         encoding="utf-8",
     )
 
-    fields = ["stage", "n", "min_ms", "mean_ms", "median_ms", "p50_ms", "p70_ms", "p90_ms", "p95_ms", "p100_ms", "max_ms"]
+    fields = [
+        "stage",
+        "n",
+        "min_ms",
+        "mean_ms",
+        "median_ms",
+        "p50_ms",
+        "p70_ms",
+        "p90_ms",
+        "p95_ms",
+        "p100_ms",
+        "max_ms",
+    ]
     with (output_dir / "latency_report.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
@@ -107,8 +115,8 @@ def _write_reports(
         f"- Invalid indexed queries excluded: {metadata['excluded_invalid_query_count']}",
         f"- Index chunks: {metadata['index_chunk_count']}",
         f"- Retrieval mode: {'parallel' if metadata['parallel_retrieval'] else 'sequential'}",
-        f"- Response cache: disabled",
-        f"- Request parsing: not applicable (direct in-process pipeline harness)",
+        "- Response cache: disabled",
+        "- Request parsing: not applicable (direct in-process pipeline harness)",
         f"- Model initialization: {metadata['model_initialization_ms']:.2f} ms (excluded from warm percentiles)",
         f"- Refused responses: {metadata['refused_count']}",
         "",
@@ -189,11 +197,13 @@ def main() -> int:
                 **{stage: latency.get(stage, 0.0) for stage in STAGES},
             }
         )
-        print(f"[{i:03d}/{n}] total={latency['total_ms']:.1f}ms generation={latency['generation_ms']:.1f}ms")
+        print(
+            f"[{i:03d}/{n}] total={latency['total_ms']:.1f}ms generation={latency['generation_ms']:.1f}ms"
+        )
 
     reports = {name: summarize(name, values) for name, values in buckets.items()}
     metadata = {
-        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "timestamp_utc": datetime.now(UTC).isoformat(),
         "request_count": n,
         "unique_query_count": unique_queries,
         "excluded_invalid_query_count": excluded_invalid_queries,

@@ -63,7 +63,7 @@ class QueryRecord:
 
 
 def _passage_id(query_id: str, index: int, language: str, text: str) -> str:
-    digest = hashlib.sha1(f"{query_id}|{index}|{language}|{text[:80]}".encode("utf-8")).hexdigest()[:16]
+    digest = hashlib.sha1(f"{query_id}|{index}|{language}|{text[:80]}".encode()).hexdigest()[:16]
     return f"{query_id}-{language}-{index}-{digest}"
 
 
@@ -109,10 +109,14 @@ def open_streaming_dataset(
     try:
         return load_dataset("parquet", data_files={split: uri}, split=split, streaming=True)
     except Exception as parquet_exc:  # noqa: BLE001
-        logger.warning("Parquet streaming failed; trying official loader", extra={"error": str(parquet_exc)})
+        logger.warning(
+            "Parquet streaming failed; trying official loader", extra={"error": str(parquet_exc)}
+        )
         try:
             try:
-                return load_dataset(dataset_id, config, split=split, streaming=True, trust_remote_code=True)
+                return load_dataset(
+                    dataset_id, config, split=split, streaming=True, trust_remote_code=True
+                )
             except TypeError:
                 return load_dataset(dataset_id, config, split=split, streaming=True)
         except Exception as exc:  # noqa: BLE001
@@ -141,8 +145,12 @@ def parse_record(
 
     raw_passages = row.get("passages") or {}
     selected = _as_list(raw_passages.get("is_selected")) if isinstance(raw_passages, dict) else []
-    english_passages = _as_list(raw_passages.get("English_passages")) if isinstance(raw_passages, dict) else []
-    translated_passages = _as_list(raw_passages.get("Translated_passages")) if isinstance(raw_passages, dict) else []
+    english_passages = (
+        _as_list(raw_passages.get("English_passages")) if isinstance(raw_passages, dict) else []
+    )
+    translated_passages = (
+        _as_list(raw_passages.get("Translated_passages")) if isinstance(raw_passages, dict) else []
+    )
     n = max(len(english_passages), len(translated_passages), len(selected))
 
     passages: list[Passage] = []

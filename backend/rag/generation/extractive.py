@@ -7,7 +7,6 @@ from rag.generation.base import GenerationResult, LLMProvider
 from rag.generation.prompts import REFUSAL_MESSAGE
 from rag.retrieval.bm25 import extract_content_tokens, tokenize
 
-
 _SENTENCE_SPLIT = re.compile(r"(?<=[.!?।])\s+|\n+")
 
 _NON_LATIN_NON_DEVA = re.compile(

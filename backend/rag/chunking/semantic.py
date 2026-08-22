@@ -62,7 +62,11 @@ class SemanticChunker:
         for sentence in sentences:
             sent_tokens = _tokens(sentence)
             extra = len(sentence) + (1 if current else 0)
-            similar = True if not current else _jaccard(current_tokens, sent_tokens) >= self.similarity_threshold
+            similar = (
+                True
+                if not current
+                else _jaccard(current_tokens, sent_tokens) >= self.similarity_threshold
+            )
             would_overflow = current and current_len + extra > self.chunk_size
             if current and (would_overflow or not similar):
                 groups.append(current)

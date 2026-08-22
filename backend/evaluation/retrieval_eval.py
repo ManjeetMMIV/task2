@@ -59,7 +59,10 @@ def aggregate_metrics(per_query: list[dict[str, float]]) -> RetrievalMetrics:
     if not per_query:
         return RetrievalMetrics(0, 0, 0, 0, 0, 0)
     n = len(per_query)
-    avg = lambda key: float(np.mean([row[key] for row in per_query]))
+
+    def avg(key: str) -> float:
+        return float(np.mean([row[key] for row in per_query]))
+
     return RetrievalMetrics(
         recall_at_5=avg("recall@5"),
         recall_at_10=avg("recall@10"),

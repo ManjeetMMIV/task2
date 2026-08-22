@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 import numpy as np
 import pytest
 
 from app.core.config import Settings
-from app.models.schemas import LatencyBreakdown, RAGResponse
 from rag.embeddings.base import EmbeddingProvider
 from rag.generation.base import GenerationResult, LLMProvider
 from rag.reranking.base import Reranker
@@ -51,7 +49,9 @@ class FakeLLM(LLMProvider):
 
 
 class FakeReranker(Reranker):
-    def rerank(self, query: str, candidates: list[RetrievalResult], top_k: int) -> list[RetrievalResult]:
+    def rerank(
+        self, query: str, candidates: list[RetrievalResult], top_k: int
+    ) -> list[RetrievalResult]:
         return candidates[:top_k]
 
 

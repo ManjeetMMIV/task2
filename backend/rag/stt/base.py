@@ -22,5 +22,4 @@ class STTProvider(ABC):
         *,
         filename: str,
         content_type: str,
-    ) -> Transcript:
-        ...
+    ) -> Transcript: ...

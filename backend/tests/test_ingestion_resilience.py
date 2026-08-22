@@ -1,15 +1,15 @@
 from pathlib import Path
 
+import numpy as np
+
 from app.core.config import Settings
 from app.core.exceptions import EmbeddingError
 from rag.chunking.metadata import make_chunk
 from rag.embeddings.base import EmbeddingProvider
+from rag.ingestion.cleaner import Passage
+from rag.ingestion.dataset_loader import QueryRecord
 from rag.ingestion.indexer import Indexer
 from rag.retrieval.bm25 import BM25Index
-from rag.retrieval.qdrant_store import QdrantStore
-from rag.ingestion.dataset_loader import QueryRecord
-from rag.ingestion.cleaner import Passage
-import numpy as np
 
 
 class FakeEmbeddings(EmbeddingProvider):

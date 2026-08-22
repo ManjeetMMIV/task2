@@ -72,5 +72,6 @@ class LexicalCoverageGuard:
                 f"insufficient cross-script dense confidence ({max_dense:.4f} < {self.min_cross_script_dense_score})",
             )
 
-        return CoverageResult(False, best, "insufficient lexical coverage against retrieved evidence")
-
+        return CoverageResult(
+            False, best, "insufficient lexical coverage against retrieved evidence"
+        )

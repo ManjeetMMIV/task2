@@ -4,9 +4,10 @@ import logging
 import pickle
 import re
 from collections import defaultdict
+from collections.abc import Sequence
 from pathlib import Path
 from threading import Lock
-from typing import Any, Iterable, Sequence
+from typing import Any
 
 import numpy as np
 
@@ -188,8 +189,7 @@ class BM25Index:
             "min_chunk_chars": min(lengths) if lengths else 0,
             "max_chunk_chars": max(lengths) if lengths else 0,
             "text_utf8_bytes": sum(
-                len(str(chunk.get("text") or "").encode("utf-8"))
-                for chunk in self._chunks
+                len(str(chunk.get("text") or "").encode("utf-8")) for chunk in self._chunks
             ),
             "languages": languages,
         }
@@ -231,9 +231,7 @@ class BM25Index:
         with self._postings_lock:
             if self._postings is not None or self._bm25 is None:
                 return
-            pending: dict[str, tuple[list[int], list[int]]] = defaultdict(
-                lambda: ([], [])
-            )
+            pending: dict[str, tuple[list[int], list[int]]] = defaultdict(lambda: ([], []))
             for document_index, frequencies in enumerate(self._bm25.doc_freqs):
                 for term, frequency in frequencies.items():
                     document_ids, term_frequencies = pending[term]
@@ -248,18 +246,12 @@ class BM25Index:
             }
             document_lengths = np.asarray(self._bm25.doc_len, dtype=np.float64)
             self._length_norm = self._bm25.k1 * (
-                1
-                - self._bm25.b
-                + self._bm25.b * document_lengths / self._bm25.avgdl
+                1 - self._bm25.b + self._bm25.b * document_lengths / self._bm25.avgdl
             )
 
     def _score_tokens(self, tokens: list[str]) -> np.ndarray:
         self._ensure_postings()
-        if (
-            self._bm25 is None
-            or self._postings is None
-            or self._length_norm is None
-        ):
+        if self._bm25 is None or self._postings is None or self._length_norm is None:
             return np.zeros(0, dtype=np.float64)
         scores = np.zeros(self._bm25.corpus_size, dtype=np.float64)
         for term in tokens:
@@ -268,9 +260,7 @@ class BM25Index:
                 continue
             document_ids, frequencies = posting
             scores[document_ids] += (self._bm25.idf.get(term) or 0) * (
-                frequencies
-                * (self._bm25.k1 + 1)
-                / (frequencies + self._length_norm[document_ids])
+                frequencies * (self._bm25.k1 + 1) / (frequencies + self._length_norm[document_ids])
             )
         return scores
 
@@ -324,7 +314,7 @@ class BM25Index:
         logger.info("Saved BM25 index", extra={"path": str(path), "docs": len(self._chunks)})
 
     @classmethod
-    def load(cls, path: Path) -> "BM25Index":
+    def load(cls, path: Path) -> BM25Index:
         index = cls()
         if not path.exists():
             return index

@@ -4,7 +4,6 @@ from rag.chunking.metadata_aware import MetadataAwareChunker
 from rag.chunking.semantic import SemanticChunker
 from rag.chunking.sentence import SentenceChunker
 
-
 TEXT = (
     "Paris is the capital of France. It is known for the Eiffel Tower. "
     "The city sits on the River Seine. Unrelated later: quantum chromodynamics studies the strong force."

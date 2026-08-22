@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable
 
 from app.core.config import Settings
 from app.core.exceptions import EmbeddingError, VectorStoreError

@@ -39,7 +39,9 @@ class CrossEncoderReranker(Reranker):
             _CACHE[key] = model
             return model
 
-    def rerank(self, query: str, candidates: list[RetrievalResult], top_k: int) -> list[RetrievalResult]:
+    def rerank(
+        self, query: str, candidates: list[RetrievalResult], top_k: int
+    ) -> list[RetrievalResult]:
         if not candidates:
             return []
         pairs = [(query, c.text) for c in candidates]
@@ -48,7 +50,7 @@ class CrossEncoderReranker(Reranker):
         except Exception as exc:  # noqa: BLE001
             raise RerankerError(f"Reranking failed: {exc}") from exc
         scored = []
-        for candidate, score in zip(candidates, scores):
+        for candidate, score in zip(candidates, scores, strict=False):
             scored.append(
                 RetrievalResult(
                     text=candidate.text,

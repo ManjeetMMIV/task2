@@ -55,11 +55,15 @@ class LocalEmbeddingProvider(EmbeddingProvider):
                 from sentence_transformers import SentenceTransformer
             except ImportError as exc:
                 raise EmbeddingError("sentence-transformers is not installed") from exc
-            logger.info("Loading embedding model", extra={"model": self._model_name, "device": self._device})
+            logger.info(
+                "Loading embedding model", extra={"model": self._model_name, "device": self._device}
+            )
             try:
                 model = SentenceTransformer(self._model_name, device=self._device)
             except Exception as exc:  # noqa: BLE001
-                raise EmbeddingError(f"Failed to load embedding model {self._model_name}: {exc}") from exc
+                raise EmbeddingError(
+                    f"Failed to load embedding model {self._model_name}: {exc}"
+                ) from exc
             _MODEL_CACHE[key] = model
             return model
 

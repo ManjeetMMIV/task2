@@ -267,7 +267,9 @@ def inspect_schema_and_samples(lang: str = "hi", split: str = "validation") -> d
         passages = row.get("passages") or {}
         if isinstance(passages, dict):
             selected = passages.get("is_selected") or []
-            print(f"n_passages   : {len(passages.get('English_passages') or passages.get('Translated_passages') or [])}")
+            print(
+                f"n_passages   : {len(passages.get('English_passages') or passages.get('Translated_passages') or [])}"
+            )
             print(f"is_selected  : {selected}")
             selected_idx = [i for i, flag in enumerate(selected) if flag]
             eng = passages.get("English_passages") or []

@@ -9,11 +9,11 @@ from app.core.exceptions import GenerationError
 from app.models.schemas import LatencyBreakdown, RAGResponse, SourceDocument
 from rag.context.builder import ContextBuilder
 from rag.generation.base import LLMProvider
-from rag.generation.prompts import REFUSAL_MESSAGE, SYSTEM_PROMPT, build_user_prompt
+from rag.generation.prompts import SYSTEM_PROMPT, build_user_prompt
+from rag.guardrails.coverage_guard import LexicalCoverageGuard
 from rag.guardrails.grounding_guard import GroundingGuard
 from rag.guardrails.input_guard import InputGuard
 from rag.guardrails.relevance_guard import RelevanceGuard
-from rag.guardrails.coverage_guard import LexicalCoverageGuard
 from rag.ingestion.cleaner import preprocess_query
 from rag.reranking.base import Reranker
 from rag.retrieval.hybrid import HybridRetriever
@@ -51,7 +51,9 @@ class RAGPipeline:
             min_overlap=settings.grounding_min_overlap,
             refusal_message=settings.refusal_message,
         )
-        self.context_builder = context_builder or ContextBuilder(max_chars=settings.max_context_chars)
+        self.context_builder = context_builder or ContextBuilder(
+            max_chars=settings.max_context_chars
+        )
         self.coverage_guard = coverage_guard or LexicalCoverageGuard()
 
     def run(
@@ -110,7 +112,9 @@ class RAGPipeline:
             )
 
         if (self.settings.answer_mode or "").lower() == "extractive":
-            coverage = self.coverage_guard.check(cleaned, hybrid_out.results, dense_results=hybrid_out.dense)
+            coverage = self.coverage_guard.check(
+                cleaned, hybrid_out.results, dense_results=hybrid_out.dense
+            )
             if not coverage.ok:
                 pipeline_ms = (time.perf_counter() - t_all) * 1000
                 total_ms = request_parsing_ms + pipeline_ms

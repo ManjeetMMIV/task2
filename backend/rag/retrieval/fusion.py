@@ -58,7 +58,9 @@ def weighted_fusion(
     docs.update({r.chunk_id: r for r in sparse})
     fused: dict[str, float] = {}
     for chunk_id in docs:
-        fused[chunk_id] = dense_weight * dense_norm.get(chunk_id, 0.0) + sparse_weight * sparse_norm.get(chunk_id, 0.0)
+        fused[chunk_id] = dense_weight * dense_norm.get(
+            chunk_id, 0.0
+        ) + sparse_weight * sparse_norm.get(chunk_id, 0.0)
     ordered = sorted(fused.items(), key=lambda item: item[1], reverse=True)[:top_k]
     out: list[RetrievalResult] = []
     for chunk_id, score in ordered:

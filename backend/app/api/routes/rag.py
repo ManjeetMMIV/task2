@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import uuid
 import time
+import uuid
 
 from fastapi import APIRouter, HTTPException, Request
 
@@ -39,7 +39,6 @@ def rag_warmup(request: Request) -> WarmupResponse:
     )
 
 
-
 @router.post("/api/rag/query", response_model=RAGResponse)
 def rag_query(payload: QueryRequest, request: Request) -> RAGResponse:
     pipeline = getattr(request.app.state, "pipeline", None)
@@ -55,6 +54,10 @@ def rag_query(payload: QueryRequest, request: Request) -> RAGResponse:
             request_parsing_ms=request_parsing_ms,
         )
     except InvalidQueryError as exc:
-        raise HTTPException(status_code=400, detail={"error": exc.message, "code": exc.code}) from exc
+        raise HTTPException(
+            status_code=400, detail={"error": exc.message, "code": exc.code}
+        ) from exc
     except RAGError as exc:
-        raise HTTPException(status_code=exc.status_code, detail={"error": exc.message, "code": exc.code}) from exc
+        raise HTTPException(
+            status_code=exc.status_code, detail={"error": exc.message, "code": exc.code}
+        ) from exc

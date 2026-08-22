@@ -29,5 +29,6 @@ class Chunk:
 class Chunker(Protocol):
     strategy: str
 
-    def chunk(self, text: str, *, document_id: str, language: str, metadata: dict[str, Any] | None = None) -> list[Chunk]:
-        ...
+    def chunk(
+        self, text: str, *, document_id: str, language: str, metadata: dict[str, Any] | None = None
+    ) -> list[Chunk]: ...

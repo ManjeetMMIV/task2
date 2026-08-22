@@ -14,5 +14,4 @@ class GenerationResult:
 
 class LLMProvider(ABC):
     @abstractmethod
-    def generate(self, prompt: str, *, system_prompt: str | None = None) -> GenerationResult:
-        ...
+    def generate(self, prompt: str, *, system_prompt: str | None = None) -> GenerationResult: ...

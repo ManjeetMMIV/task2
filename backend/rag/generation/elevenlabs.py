@@ -55,7 +55,9 @@ class ElevenLabsProvider(LLMProvider):
             "Content-Type": "application/json",
         }
 
-    def _request(self, method: str, path: str, json: dict[str, Any] | None = None) -> httpx.Response:
+    def _request(
+        self, method: str, path: str, json: dict[str, Any] | None = None
+    ) -> httpx.Response:
         url = f"{self.api_base}{path}"
         last_error: Exception | None = None
         for attempt in range(1, self.max_retries + 1):
@@ -70,7 +72,9 @@ class ElevenLabsProvider(LLMProvider):
                 continue
             except httpx.HTTPError as exc:
                 last_error = exc
-                logger.warning("ElevenLabs HTTP error", extra={"attempt": attempt, "error": str(exc)})
+                logger.warning(
+                    "ElevenLabs HTTP error", extra={"attempt": attempt, "error": str(exc)}
+                )
                 if attempt >= self.max_retries:
                     raise GenerationError(f"ElevenLabs request failed: {exc}") from exc
                 time.sleep(min(2 ** (attempt - 1), 8))
@@ -87,7 +91,11 @@ class ElevenLabsProvider(LLMProvider):
                         status_code=response.status_code,
                     )
                 retry_after = response.headers.get("Retry-After")
-                delay = float(retry_after) if retry_after and retry_after.isdigit() else min(2 ** (attempt - 1), 8)
+                delay = (
+                    float(retry_after)
+                    if retry_after and retry_after.isdigit()
+                    else min(2 ** (attempt - 1), 8)
+                )
                 time.sleep(delay)
                 continue
 
@@ -166,7 +174,9 @@ class ElevenLabsProvider(LLMProvider):
             "new_turns_limit": 1,
         }
         t0 = time.perf_counter()
-        response = self._request("POST", f"/v1/convai/agents/{agent_id}/simulate-conversation", json=payload)
+        response = self._request(
+            "POST", f"/v1/convai/agents/{agent_id}/simulate-conversation", json=payload
+        )
         latency_ms = (time.perf_counter() - t0) * 1000
         data = response.json()
         text = _extract_agent_text(data)

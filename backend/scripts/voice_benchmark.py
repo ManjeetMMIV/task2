@@ -7,7 +7,7 @@ import os
 import sys
 import time
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,7 +31,12 @@ def main() -> int:
         return 2
     n = max(1, settings.voice_benchmark_queries)
     audio = audio_path.read_bytes()
-    content_types = {".wav": "audio/wav", ".mp3": "audio/mpeg", ".m4a": "audio/mp4", ".webm": "audio/webm"}
+    content_types = {
+        ".wav": "audio/wav",
+        ".mp3": "audio/mpeg",
+        ".m4a": "audio/mp4",
+        ".webm": "audio/webm",
+    }
     content_type = content_types.get(audio_path.suffix.lower())
     if not content_type:
         print("Unsupported benchmark file extension.")
@@ -87,7 +92,7 @@ def main() -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     report = {
         "metadata": {
-            "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            "timestamp_utc": datetime.now(UTC).isoformat(),
             "requests": n,
             "audio_filename": audio_path.name,
             "audio_bytes": len(audio),
@@ -98,7 +103,9 @@ def main() -> int:
         "stages": reports,
         "samples": samples,
     }
-    (output_dir / "voice_latency_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    (output_dir / "voice_latency_report.json").write_text(
+        json.dumps(report, indent=2), encoding="utf-8"
+    )
     lines = [
         "# Voice Pipeline Latency Report",
         "",
@@ -110,7 +117,9 @@ def main() -> int:
         "|---|---:|---:|---:|---:|",
     ]
     for stage, values in reports.items():
-        lines.append(f"| {stage} | {values['p50_ms']:.2f} | {values['p70_ms']:.2f} | {values['p100_ms']:.2f} | {values['mean_ms']:.2f} |")
+        lines.append(
+            f"| {stage} | {values['p50_ms']:.2f} | {values['p70_ms']:.2f} | {values['p100_ms']:.2f} | {values['mean_ms']:.2f} |"
+        )
     (output_dir / "voice_latency_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Wrote voice report to {output_dir}")
     return 0

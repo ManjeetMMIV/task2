@@ -7,7 +7,7 @@ import json
 import sys
 import time
 from dataclasses import asdict
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
@@ -78,13 +78,20 @@ def main() -> int:
             )
     query_rows = []
     for record in records:
-        for language, query in (("en", record.english_query), (record.target_lang.split("_")[0], record.query)):
-            relevant = {p.document_id for p in record.passages if p.language == language and p.is_selected}
+        for language, query in (
+            ("en", record.english_query),
+            (record.target_lang.split("_")[0], record.query),
+        ):
+            relevant = {
+                p.document_id for p in record.passages if p.language == language and p.is_selected
+            }
             if query and relevant:
                 query_rows.append({"query": query, "relevant": relevant})
 
     rows: list[dict] = []
-    model_names = [name.strip() for name in settings.embedding_eval_models.split(",") if name.strip()]
+    model_names = [
+        name.strip() for name in settings.embedding_eval_models.split(",") if name.strip()
+    ]
     for model_name in model_names:
         load_started = time.perf_counter()
         provider = LocalEmbeddingProvider(
@@ -135,12 +142,14 @@ def main() -> int:
 
     output_dir = settings.benchmark_output_dir / "retrieval"
     output_dir.mkdir(parents=True, exist_ok=True)
-    with (output_dir / "embedding_comparison.csv").open("w", newline="", encoding="utf-8") as handle:
+    with (output_dir / "embedding_comparison.csv").open(
+        "w", newline="", encoding="utf-8"
+    ) as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
     metadata = {
-        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "timestamp_utc": datetime.now(UTC).isoformat(),
         "source_records": len(records),
         "query_count": len(query_rows),
         "chunk_count": len(chunks),

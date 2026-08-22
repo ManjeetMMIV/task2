@@ -65,7 +65,9 @@ class ElevenLabsSTTProvider(STTProvider):
                 if attempt < self.max_retries:
                     time.sleep(min(2 ** (attempt - 1), 4))
                     continue
-                raise STTError("ElevenLabs STT request timed out", status_code=504, code="stt_timeout") from exc
+                raise STTError(
+                    "ElevenLabs STT request timed out", status_code=504, code="stt_timeout"
+                ) from exc
             except httpx.HTTPError as exc:
                 last_error = exc
                 if attempt < self.max_retries:
@@ -75,7 +77,11 @@ class ElevenLabsSTTProvider(STTProvider):
 
             if response.status_code in TRANSIENT_STATUS and attempt < self.max_retries:
                 retry_after = response.headers.get("Retry-After")
-                delay = float(retry_after) if retry_after and retry_after.replace(".", "", 1).isdigit() else min(2 ** (attempt - 1), 4)
+                delay = (
+                    float(retry_after)
+                    if retry_after and retry_after.replace(".", "", 1).isdigit()
+                    else min(2 ** (attempt - 1), 4)
+                )
                 time.sleep(delay)
                 continue
             if response.status_code >= 400:
@@ -88,7 +94,11 @@ class ElevenLabsSTTProvider(STTProvider):
             payload: dict[str, Any] = response.json()
             text = str(payload.get("text") or "").strip()
             if not text:
-                raise STTError("ElevenLabs STT returned an empty transcript", status_code=422, code="empty_transcript")
+                raise STTError(
+                    "ElevenLabs STT returned an empty transcript",
+                    status_code=422,
+                    code="empty_transcript",
+                )
             return Transcript(
                 text=text,
                 language=payload.get("language_code"),

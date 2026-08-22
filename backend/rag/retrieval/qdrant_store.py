@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import logging
 import uuid
-from typing import Any, Iterable, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from app.core.exceptions import VectorStoreError
 from rag.chunking.base import Chunk
@@ -184,7 +185,9 @@ class QdrantStore:
                 )
                 hits = response.points
             else:
-                raise VectorStoreError("Installed qdrant-client cannot run Document inference queries")
+                raise VectorStoreError(
+                    "Installed qdrant-client cannot run Document inference queries"
+                )
         except VectorStoreError:
             raise
         except Exception as exc:  # noqa: BLE001
