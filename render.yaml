@@ -46,3 +46,7 @@ services:
         value: "20"
       - key: VOICE_RATE_LIMIT_PER_MINUTE
         value: "20"
+      - key: GROUNDING_MIN_OVERLAP
+        value: "0.0"
+      - key: RELEVANCE_MIN_SCORE
+        value: "0.0"
