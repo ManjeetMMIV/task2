@@ -1,8 +1,10 @@
 ﻿# langrag
-
+demo video : https://drive.google.com/file/d/1VOzZuKd-Jfx5NiRu6oMUOtoWiO4wa2WB/view?usp=sharing
+deployed link : https://task2-phi-kohl.vercel.app/
 voice-enabled retrieval-augmented generation over multilingual ms marco (ai4bharat msmarco-xi).
 
 you speak a question, the backend transcribes it via elevenlabs stt, pulls relevant passages from a hybrid dense and sparse index (qdrant cloud + bm25), checks for relevance and hallucinations, and returns a grounded answer.
+
 
 ---
 
