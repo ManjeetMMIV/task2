@@ -29,10 +29,7 @@ def validate_deployment_profile(settings: Settings) -> None:
             "Cloud deployment attempted to initialize local embedding model. "
             "Render Free requires RETRIEVAL_MODE=cloud_dense_sparse."
         )
-    if settings.answer_mode != "extractive":
-        raise RuntimeError(
-            "Render Free requires ANSWER_MODE=extractive to run without generative LLM overhead."
-        )
+
 
 
 def build_pipeline(settings: Settings) -> RAGPipeline:
