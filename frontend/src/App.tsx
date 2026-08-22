@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { FiAlertCircle, FiArrowRight, FiRefreshCw, FiVolume2 } from 'react-icons/fi'
+import { FiAlertCircle, FiArrowRight, FiRefreshCw } from 'react-icons/fi'
 import { getHealth, submitVoiceQuery, warmupRag } from './api/ragApi'
 import { AnswerPanel } from './components/AnswerPanel'
 import { EvidenceCard } from './components/EvidenceCard'
@@ -9,7 +9,6 @@ import { ProcessingState } from './components/ProcessingState'
 import { RequestMeta } from './components/RequestMeta'
 import { VoiceRecorder } from './components/VoiceRecorder'
 import { useVoiceRecorder } from './hooks/useVoiceRecorder'
-import type { OrbState } from './types/orb'
 import type { ExperienceState, SystemStatus, VoiceRagResponse } from './types/rag'
 
 function App() {
@@ -17,8 +16,6 @@ function App() {
   const [result, setResult] = useState<VoiceRagResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [, setSystemStatus] = useState<SystemStatus>('preparing')
-  const [activeOrbState, setActiveOrbState] = useState<OrbState>('idle')
-  const [isSpeaking, setIsSpeaking] = useState(false)
 
   useEffect(() => {
     let mounted = true
