@@ -170,15 +170,6 @@ function App() {
             <div className="grid sm:grid-cols-2 gap-4">
               <LatencyPanel latency={result.latency} />
               <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsSpeaking((prev) => !prev)}
-                  className="secondary-button flex-1"
-                  aria-label={isSpeaking ? 'Pause AI voice' : 'Listen to AI voice'}
-                >
-                  <FiVolume2 className={`size-4 ${isSpeaking ? 'text-indigo-600 animate-pulse' : ''}`} aria-hidden="true" />
-                  {isSpeaking ? 'Speaking…' : 'Simulate voice'}
-                </button>
                 <button type="button" onClick={start} className="primary-button flex-1">
                   Ask another question <FiArrowRight aria-hidden="true" />
                 </button>
